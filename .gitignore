@@ -1,0 +1,13 @@
+# ignore OS generated files
+.DS_Store
+.DS_Store?
+
+# Ignore cache
+.cache/
+
+#Laravel Specific files
+/vendor
+.env
+/public/.htaccess
+/storage
+storage/*.key
