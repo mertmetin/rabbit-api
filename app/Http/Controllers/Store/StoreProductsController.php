@@ -12,12 +12,12 @@ use \Exception;
 
 class StoreProductsController extends Controller
 {
-    protected function getStoreProductCategories(Request $request)
+    protected function getStoreProductCategories(Request $request, $storeId)
     {
-        $storeId = $request->input('storeId');
+        // $storeId = $request->input('storeId');
 
-        if (!$storeId)
-            throw new Exception('Invalid request.');
+        // if (!$storeId)
+        //     throw new Exception('Invalid request.');
         
         $storeProducts = StoreProduct::where('store_id', $storeId)->get();
 
@@ -50,13 +50,13 @@ class StoreProductsController extends Controller
         return $categories;
     }
 
-    protected function getStoreProducts(Request $request)
+    protected function getStoreProducts(Request $request, $storeId)
     {
         $category = $request->input('category');
-        $storeId =  $request->input('storeId');
+        // $storeId =  $request->input('storeId');
 
-        if (!$category || !$storeId)
-            throw new Exception('Invalid request.');
+        // if (!$category)
+        //     throw new Exception('Invalid request.');
 
 
         $storeProducts = StoreProduct::

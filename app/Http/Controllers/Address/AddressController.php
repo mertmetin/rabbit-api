@@ -9,12 +9,12 @@ use App\AddressType;
 
 class AddressController extends Controller
 {
-    protected function get(Request $request)
+    protected function get($userId)
     {
-        if (!$request->filled('userId'))
+        if (!$userId)
             throw new \Exception('Invalid request.');
 
-        $userId = $request->input('userId');
+        // $userId = $request->input('userId');
         // $use = UserAddress::with('address_type')
                 //   ->find('19');
         //   error_log(json_encode(UserAddress::with('AddressTypes')));
@@ -28,12 +28,12 @@ class AddressController extends Controller
         return $userAddresses;
     }
 
-    protected function add(Request $request)
+    protected function add(Request $request, $userId)
     {   
-        if (!$request->filled('userId', 'address'))
+        if (!$request->filled('address'))
             throw new \Exception('Invalid request.');
 
-        $userId = $request->input('userId');
+        // $userId = $request->input('userId');
         $address = $request->input('address');
         $placeId = $address['place_id'];
 
@@ -76,13 +76,13 @@ class AddressController extends Controller
         return $dbUser->update($address);
     }
 
-    protected function delete(Request $request)
+    protected function delete(Request $request, $userId, $addressId)
     {
-        if (!$request->filled('id', 'userId'))
-            throw new \Exception('Invalid request.');
+        // if (!$request->filled('id'))
+        //     throw new \Exception('Invalid request.');
 
-        $userId = $request->input('userId');
-        $addressId = $request->input('id');
+        // $userId = $request->input('userId');
+        // $addressId = $request->input('id');
         $userAddress = UserAddress::where('user_id', $userId)
                 ->where('id', $addressId)
                 ->get()->last();

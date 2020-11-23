@@ -20,11 +20,35 @@ Route::post('users/{user_id}/token/resend', 'Auth\RegisterController@resendCode'
 Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
 Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@resetPassword');
 
+
+Route::get('/addresses/types', 'Address\AddressTypesController@get');
+
+
+/**
+ * Promotions
+ */
+Route::get('/promotions', 'Promotions\PromotionsController@get');
+
+
 Route::group(['middleware' => ['auth:api']], function () {
     Route::get('user', 'UsersController@getUser');
     Route::patch('users/{user_id}/password/change', 'Auth\ChangePasswordController@changePassword');
-    // Test
     Route::put('users/{user_id}', 'UsersController@edit');
+
+    /**
+     * Addresses
+     */
+    Route::get('users/{user_id}/addresses', 'Address\AddressController@get');
+    Route::post('users/{user_id}/addresses', 'Address\AddressController@add');
+    Route::delete('users/{user_id}/addresses/{address_id}', 'Address\AddressController@delete');
+
+    /**
+     * Stores
+     */
+    Route::post('/stores/', 'Store\StoreController@getStore');
+    Route::get('stores/{store_id}/categories', 'Store\StoreProductsController@getStoreProductCategories');
+    Route::get('stores/{store_id}/products', 'Store\StoreProductsController@getStoreProducts');
+
 });
 
 Route::post('login', 'Auth\LoginController@login');
@@ -41,17 +65,17 @@ Route::post('/addCard', 'Payment\CardController@add');
 Route::post('/deleteCard', 'Payment\CardController@delete');
 Route::post('/getCards', 'Payment\CardController@get');
 Route::post('/updateCard', 'Payment\CardController@update');
-Route::post('/getAddressTypes', 'Address\AddressTypesController@get');
-Route::post('/getAddresses', 'Address\AddressController@get');
-Route::post('/addAddress', 'Address\AddressController@add');
-Route::post('/deleteAddress', 'Address\AddressController@delete');
-Route::post('/editAddress', 'Address\AddressController@edit');
-Route::post('/getProducts', 'Product\ProductController@get');
-Route::post('/getProductCategories', 'Product\ProductCategoryController@get');
-Route::post('/getPromotions', 'Promotions\PromotionsController@get');
-Route::post('/getStore', 'Store\StoreController@getStore');
-Route::post('/getStoreProductCategories', 'Store\StoreProductsController@getStoreProductCategories');
-Route::post('/getStoreProducts', 'Store\StoreProductsController@getStoreProducts');
+// Route::post('/getAddressTypes', 'Address\AddressTypesController@get');
+// Route::post('/getAddresses', 'Address\AddressController@get');
+// Route::post('/addAddress', 'Address\AddressController@add');
+// Route::post('/deleteAddress', 'Address\AddressController@delete');
+// Route::post('/editAddress', 'Address\AddressController@edit');
+// Route::post('/getProducts', 'Product\ProductController@get');
+// Route::post('/getProductCategories', 'Product\ProductCategoryController@get');
+// Route::post('/getPromotions', 'Promotions\PromotionsController@get');
+// Route::post('/getStore', 'Store\StoreController@getStore');
+// Route::post('/getStoreProductCategories', 'Store\StoreProductsController@getStoreProductCategories');
+// Route::post('/getStoreProducts', 'Store\StoreProductsController@getStoreProducts');
 
     // Route::post('getUser', 'UsersController@gestUser');
 
