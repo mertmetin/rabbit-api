@@ -7,7 +7,9 @@ use App\PasswordReset;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
+use InvalidArgumentException;
 
 class ResetPasswordController extends Controller
 {
@@ -29,14 +31,13 @@ class ResetPasswordController extends Controller
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
 
-    protected function resetPassword(Request $request)
+    protected function resetPassword(Request $request, $userId): Response
     {
-        if (!$request->filled('user_id', 'token', 'password'))
-            throw new \Exception('Invalid request.');
-
-        $userId = $request->input('user_id');
         $token = $request->input('token');
         $password = $request->input('password');
+
+        if (!$token || !$password)
+            throw new \InvalidArgumentException('Invalid request.');
 
         try {
             $user = User::findOrFail($userId);
@@ -45,8 +46,8 @@ class ResetPasswordController extends Controller
         }
 
         $passwordReset = PasswordReset::where('user_id', $userId)
-                        ->orderBy('id')
-                        ->get()->last();
+            ->orderBy('id')
+            ->get()->last();
 
         if (!$passwordReset)
             throw new Exception('Invalid request.');
@@ -57,6 +58,6 @@ class ResetPasswordController extends Controller
           User::where('id', $userId)
             ->update(['password' => Hash::make($password)]);
 
-        return $userId;
+        return new Response(true);
     }
 }

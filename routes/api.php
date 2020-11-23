@@ -14,16 +14,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:api')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+Route::post('users', 'Auth\RegisterController@register');
+Route::post('users/{user_id}/activate', 'Auth\RegisterController@activateUser');
+Route::post('users/{user_id}/token/resend', 'Auth\RegisterController@resendCode');
+Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
+Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@resetPassword');
 
-Route::post('/activateUser', 'Auth\RegisterController@activateUser');
-Route::post('/resendCode', 'Auth\RegisterController@resendCode');
-Route::post('/sendPasswordResetCode', 'Auth\ForgotPasswordController@sendPasswordResetCode');
-Route::post('/resetPassword', 'Auth\ResetPasswordController@resetPassword');
-Route::post('/changePassword', 'Auth\ChangePasswordController@changePassword');
-Route::post('/editUser', 'UsersController@edit');
+Route::group(['middleware' => ['auth:api']], function () {
+    Route::get('user', 'UsersController@getUser');
+    Route::patch('users/{user_id}/password/change', 'Auth\ChangePasswordController@changePassword');
+    // Test
+    Route::put('users/{user_id}', 'UsersController@edit');
+});
+
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout');
+
+// Route::post('/activateUser', 'Auth\RegisterController@activateUser');
+// Route::post('/resendCode', 'Auth\RegisterController@resendCode');
+// Route::post('/sendPasswordResetCode', 'Auth\ForgotPasswordController@sendPasswordResetCode');
+// Route::post('/resetPassword', 'Auth\ResetPasswordController@resetPassword');
+// Route::post('/changePassword', 'Auth\ChangePasswordController@changePassword');
+// Route::post('/editUser', 'UsersController@edit');
 Route::post('/registerCustomer', 'Payment\CustomerController@register');
 Route::post('/addCard', 'Payment\CardController@add');
 Route::post('/deleteCard', 'Payment\CardController@delete');
@@ -41,8 +53,6 @@ Route::post('/getStore', 'Store\StoreController@getStore');
 Route::post('/getStoreProductCategories', 'Store\StoreProductsController@getStoreProductCategories');
 Route::post('/getStoreProducts', 'Store\StoreProductsController@getStoreProducts');
 
-Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout');
     // Route::post('getUser', 'UsersController@gestUser');
 
 
@@ -56,12 +66,3 @@ Route::post('logout', 'Auth\LoginController@logout');
 
 
 // Route::post('getUser', 'UsersController@getUser');
- Route::group(['middleware' => ['auth:api']], function () {
-
-
-    Route::post('getUser', 'UsersController@getUser');
-
-        //  error_log(json_encode($request));
-
-    //    Route::post('/getUser', 'UsersController@getUser');
-});

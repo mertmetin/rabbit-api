@@ -11,7 +11,9 @@ use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Aws\Sns\SnsClient;
+use InvalidArgumentException;
 
 // use Aws\Exception\AwsException;
 
@@ -69,7 +71,7 @@ class RegisterController extends Controller
         $validator = $this->validator($input);
 
         if ($validator->passes()) {
-            $user = $this->create($input); 
+            $user = $this->createUser($input); 
             $token = $this->sendActivationCode($user->phone);
             $this->createUserActivation($user->id, $token);
 
@@ -77,6 +79,22 @@ class RegisterController extends Controller
         } else {
             throw new \Exception('Invalid request.');
         }
+    }
+
+    /**
+     * Creates a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\User
+     */
+    protected function createUser(array $data)
+    {
+        return User::create([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+        ]);
     }
 
     protected function sendActivationCode($phone)
@@ -101,13 +119,12 @@ class RegisterController extends Controller
         return $token;
     }
 
-    protected function resendCode(Request $request)
+    protected function resendCode(Request $request, $userId): Response
     {
-        if (!$request->filled('user_id', 'phone'))
-            throw new \Exception('Invalid request.');
-
-        $userId = $request->input('user_id');
         $phone = $request->input('phone');
+
+        if (!$phone)
+            throw new InvalidArgumentException('Phone is missing.');
 
         try {
             $user = User::findOrFail($userId);
@@ -115,21 +132,25 @@ class RegisterController extends Controller
             throw new \Exception('User not found.');
         }
 
+        if ($user->active)
+           throw new \Exception('User already activated.');
+
         if ($user->phone != $phone)
             throw new \Exception('Invalid request.');
 
         $code = $this->sendActivationCode($phone);
         $this->createUserActivation($userId, $code);
+
+        return new Response(true);
     }
 
-    protected function activateUser(Request $request)
+    protected function activateUser(Request $request, $userId): Response
     {
-        if (!$request->filled('user_id', 'token'))
-            throw new \Exception('Invalid request.');
+        if (!$request->filled('token'))
+            throw new InvalidArgumentException('Registration token is missing.');
 
         $input = $request->all();
-        $userId = $input['user_id'];
-        $token = $input['token'];
+        $token = $request->input('token');
 
         try {
             $user = User::findOrFail($userId);
@@ -153,6 +174,8 @@ class RegisterController extends Controller
 
         User::where('id', $userId)
             ->update(['active' => 1, 'phone_verified_at' => now()]);
+
+        return new Response(true);
     }
 
     protected function createUserActivation($userId, $token)
@@ -163,21 +186,5 @@ class RegisterController extends Controller
         ]);
 
         return $userActivation;
-    }
-
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
     }
 }
