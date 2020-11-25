@@ -9,5 +9,5 @@
 /vendor
 .env
 /public/.htaccess
-/storage
+# /storage
 storage/*.key
