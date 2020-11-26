@@ -11,3 +11,6 @@
 /public/.htaccess
 # /storage
 storage/*.key
+
+#node modules
+node_modules
