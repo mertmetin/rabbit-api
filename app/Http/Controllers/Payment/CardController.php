@@ -13,10 +13,11 @@ class CardController extends Controller
 
     protected function get(Request $request)
     {
-        if (!$request->filled('userId'))
+        $userId = $request->input('userId');
+
+        if (!$userId)
             throw new \Exception('Invalid request.');
 
-        $userId = $request->input('userId');
         $stripeCustomer = StripeCustomer::where('user_id', $userId)->get()->last();
         $customerId = $stripeCustomer->customer_id;
         $stripeCards = StripeCard::where('customer_id', $customerId)->get()->all();
@@ -58,11 +59,12 @@ class CardController extends Controller
 
     protected function add(Request $request)
     {
-        if (!$request->filled('customerId', 'card_info'))
-            throw new \Exception('Invalid request.');
-        
+        $customerId = $request->input('customerId');
         $cardInfo = $request->input('card_info');
       
+        if (!$customerId || !$cardInfo)
+            throw new \Exception('Invalid request.');
+              
         // Validate credit card info (e.g. cvc, expiry date etc.)
         $this->validateCreditCard($cardInfo); 
         $customerId = $request->input('customerId');

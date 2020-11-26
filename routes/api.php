@@ -20,15 +20,12 @@ Route::post('users/{user_id}/token/resend', 'Auth\RegisterController@resendCode'
 Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
 Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@resetPassword');
 
-
 Route::get('/addresses/types', 'Address\AddressTypesController@get');
-
 
 /**
  * Promotions
  */
-Route::get('/promotions', 'Promotions\PromotionsController@get');
-
+Route::get('promotions', 'Promotions\PromotionsController@get');
 
 Route::group(['middleware' => ['auth:api']], function () {
     Route::get('user', 'UsersController@getUser');
@@ -49,44 +46,15 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('stores/{store_id}/categories', 'Store\StoreProductsController@getStoreProductCategories');
     Route::get('stores/{store_id}/products', 'Store\StoreProductsController@getStoreProducts');
 
+    /**
+     * Payment
+     */
+    Route::post('payment/customers', 'Payment\CustomerController@register');
+    Route::post('payment/cards', 'Payment\CardController@add');
+    Route::delete('payment/cards', 'Payment\CardController@delete');
+    Route::get('payment/cards', 'Payment\CardController@get');
+    Route::patch('payment/cards', 'Payment\CardController@update');
 });
 
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout');
-
-// Route::post('/activateUser', 'Auth\RegisterController@activateUser');
-// Route::post('/resendCode', 'Auth\RegisterController@resendCode');
-// Route::post('/sendPasswordResetCode', 'Auth\ForgotPasswordController@sendPasswordResetCode');
-// Route::post('/resetPassword', 'Auth\ResetPasswordController@resetPassword');
-// Route::post('/changePassword', 'Auth\ChangePasswordController@changePassword');
-// Route::post('/editUser', 'UsersController@edit');
-Route::post('/registerCustomer', 'Payment\CustomerController@register');
-Route::post('/addCard', 'Payment\CardController@add');
-Route::post('/deleteCard', 'Payment\CardController@delete');
-Route::post('/getCards', 'Payment\CardController@get');
-Route::post('/updateCard', 'Payment\CardController@update');
-// Route::post('/getAddressTypes', 'Address\AddressTypesController@get');
-// Route::post('/getAddresses', 'Address\AddressController@get');
-// Route::post('/addAddress', 'Address\AddressController@add');
-// Route::post('/deleteAddress', 'Address\AddressController@delete');
-// Route::post('/editAddress', 'Address\AddressController@edit');
-// Route::post('/getProducts', 'Product\ProductController@get');
-// Route::post('/getProductCategories', 'Product\ProductCategoryController@get');
-// Route::post('/getPromotions', 'Promotions\PromotionsController@get');
-// Route::post('/getStore', 'Store\StoreController@getStore');
-// Route::post('/getStoreProductCategories', 'Store\StoreProductsController@getStoreProductCategories');
-// Route::post('/getStoreProducts', 'Store\StoreProductsController@getStoreProducts');
-
-    // Route::post('getUser', 'UsersController@gestUser');
-
-
-// Route::middleware('auth:api')->post('/getUser', function(Request $request) {
-//          error_log(json_encode('here'));
-// });
-
-
-// error_log(json_encode($_POST));
-
-
-
-// Route::post('getUser', 'UsersController@getUser');

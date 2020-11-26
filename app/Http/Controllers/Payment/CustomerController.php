@@ -9,17 +9,12 @@ use App\StripeCustomer;
 
 class CustomerController extends Controller
 {
-    protected function get($userId)
-    {
-        return StripeCustomer::where('user_id', $userId)->get()->last();
-    }
-
     protected function register(Request $request)
     {
-        if (!$request->filled('userId'))
-            throw new \Exception('Invalid request.');
-
         $userId = $request->input('userId');
+
+        if (!$userId)
+            throw new \Exception('Invalid request.');
 
         try {
             $user = User::findOrFail($userId);
@@ -27,10 +22,10 @@ class CustomerController extends Controller
             throw new \Exception('User not found.');
         }
 
-        $customer = $this->get($userId);
+        $customer = StripeCustomer::where('user_id', $userId)->get()->last();
 
         if ($customer)
-            return $customer->customer_id;
+            throw new Exception('Customer already exists.');
 
         // Set the Stripe API key
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
