@@ -22,7 +22,8 @@
         "laravel/ui": "^2.0",
         "stripe/stripe-php": "^7.28",
         "tcg/voyager": "^1.4",
-        "twilio/sdk": "^6.2"
+        "twilio/sdk": "^6.2",
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

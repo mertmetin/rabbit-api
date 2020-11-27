@@ -52,15 +52,12 @@ class LoginController extends Controller
 
         $credentials = $request->only('phone', 'password');
 
-        if (Auth::attempt($credentials)) {
-            $user = Auth::user();
-            $token = $user->createToken($user->phone.'-'. now());
+        if (!$token = Auth::attempt($credentials)) 
+            return response()->json(['error' => 'Unauthorized'], 401);
 
-            return [
-                'id' => $token->token->id,
-                'token' => $token->accessToken
-            ];
-        }
+        return response()->json([
+            'token' => $token,
+        ]);
     }
 
     public function logout(Request $request)
@@ -78,5 +75,21 @@ class LoginController extends Controller
 
         // Revoke all of the token's refresh tokens...
         $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+    }
+
+    /**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondWithToken($token)
+    {
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => auth()->factory()->getTTL() * 60
+        ]);
     }
 }

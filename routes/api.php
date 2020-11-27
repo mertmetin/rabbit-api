@@ -56,5 +56,17 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::patch('payment/cards', 'Payment\CardController@update');
 });
 
+
 Route::post('login', 'Auth\LoginController@login');
-Route::post('logout', 'Auth\LoginController@logout');
+
+
+// Route::group([
+//     'middleware' => 'api'
+
+// ], function ($router) {
+//     Route::post('login', 'Auth\LoginController@login');
+//     Route::post('logout', 'Auth\LoginController@logout');
+// });
+
+
+

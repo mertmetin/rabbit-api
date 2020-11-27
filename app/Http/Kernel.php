@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use App\Http\Middleware\UseApiGuard;
 
 class Kernel extends HttpKernel
 {
@@ -38,11 +39,14 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             // \Laravel\Passport\Http\Middleware\CreateFreshApiToken::class,
         ],
-
         'api' => [
-            'throttle:60,1',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ],
+                UseApiGuard::class
+        ]
+
+        // 'api' => [
+        //     'throttle:60,1',
+        //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        // ],
     ];
 
     /**
