@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
 
@@ -12,6 +13,14 @@ class UsersController extends Controller
     protected function getUser(Request $request)
     {
        return Auth::user();
+    }
+
+    protected function delete(Request $request, $userId): Response
+    {
+        $user = User::find($userId)->first();
+        $user->delete();
+
+        return new Response(true, 204);
     }
 
     protected function edit(Request $request)

@@ -65,20 +65,24 @@ class RegisterController extends Controller
         ]);
     }
 
-    protected function register(Request $request)
+    protected function register(Request $request): Response
     {
         $input = $request->all();
         $validator = $this->validator($input);
 
-        if ($validator->passes()) {
-            $user = $this->createUser($input); 
-            $token = $this->sendActivationCode($user->phone);
-            $this->createUserActivation($user->id, $token);
+        if ($validator->fails())
+            throw new \InvalidArgumentException(json_encode($validator->failed()));
 
-            return $user->id;
-        } else {
-            throw new \Exception('Invalid request.');
-        }
+        $user = $this->createUser($input);
+        $token = $this->sendActivationCode($user->phone);
+        $this->createUserActivation($user->id, $token);
+
+        $data = [
+            'id' => $user->id,
+            'token' => $token
+        ];  
+
+        return new Response($data, 201);
     }
 
     /**
@@ -89,12 +93,19 @@ class RegisterController extends Controller
      */
     protected function createUser(array $data)
     {
-        return User::create([
-            'name' => $data['name'],
-            'phone' => $data['phone'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            $user = User::create([
+                'name' => $data['name'],
+                'phone' => $data['phone'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
+        } catch (\Exception $e) {
+            print($e);
+        }
+
+
+        return $user;
     }
 
     protected function sendActivationCode($phone)

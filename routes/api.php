@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('users', 'Auth\RegisterController@register');
-Route::post('users/{user_id}/activate', 'Auth\RegisterController@activateUser');
+Route::patch('users/{user_id}/activate', 'Auth\RegisterController@activateUser');
+Route::delete('users/{user_id}', 'UsersController@delete');
 Route::post('users/{user_id}/token/resend', 'Auth\RegisterController@resendCode');
 Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
 Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@resetPassword');
