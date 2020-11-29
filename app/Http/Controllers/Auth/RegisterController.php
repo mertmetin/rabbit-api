@@ -104,7 +104,6 @@ class RegisterController extends Controller
             print($e);
         }
 
-
         return $user;
     }
 

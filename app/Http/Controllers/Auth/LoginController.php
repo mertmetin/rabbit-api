@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -52,29 +53,21 @@ class LoginController extends Controller
 
         $credentials = $request->only('phone', 'password');
 
-        if (!$token = Auth::attempt($credentials)) 
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if (!$token = Auth::attempt($credentials))
+            return new Response(['error' => 'Unauthorized'], 401);
 
-        return response()->json([
-            'token' => $token,
-        ]);
+        if (!boolval(Auth::user()->active))
+            return new Response(['error' => 'User not activated'], 401);
+
+        return new Response(['token' => $token]);
     }
 
     public function logout(Request $request)
     {
-        if (!$request->filled('tokenId'))
-            throw new \Exception('Invalid request.');
+        auth()->logout();
 
-        $tokenId = $request->input('tokenId');
-
-        $tokenRepository = app('Laravel\Passport\TokenRepository');
-        $refreshTokenRepository = app('Laravel\Passport\RefreshTokenRepository');
-
-        // Revoke an access token...
-        $tokenRepository->revokeAccessToken($tokenId);
-
-        // Revoke all of the token's refresh tokens...
-        $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
+        // Pass true to force the token to be blacklisted "forever"
+        auth()->logout(true);
     }
 
     /**
