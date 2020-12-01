@@ -8,130 +8,83 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class RegistrationTest extends TestCase
+final class RegistrationTest extends TestCase
 {
-    // use RefreshDatabase;
+    use DatabaseTransactions;
 
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_register()
+    public function test_register(): void
     {
-        $data = [
-            'name' => 'Mert Metin',
-            'phone' => '(613) 327-8306',
-            'email' => 'mertmetin@outlook.com',
-            'password' => '2631'
-        ];
-
-        $response = $this->post('api/users', $data);
+        $user = factory(\App\User::class)->make();
+        $response = $this->post('api/users', $user->toArray());
         $response->assertStatus(201);
-        $data = json_decode($response->getContent(), true);
-
-        return $data;
     }
 
-    /**
-     * @depends test_register
-     */
-    public function test_activate_user($data)
+    public function test_activate_user(): void
     {
+        $user = factory(\App\User::class)->make();
+        $response = $this->post('api/users', $user->toArray());
+        $data = json_decode($response->getContent(), true);
         $userId = $data['id'];
         $response = $this->patch("api/users/$userId/activate", $data);
         $response->assertStatus(200);
     }
 
-    /**
-     * @depends test_register
-     */
-    public function test_activate_user_with_wrong_code($data)
+    public function test_activate_user_with_wrong_code(): void
     {
+        $user = factory(\App\User::class)->make();
+        $response = $this->post('api/users', $user->toArray());
+        $data = json_decode($response->getContent(), true);
         $userId = $data['id'];
         $data['token'] = 9999;
         $response = $this->patch("api/users/$userId/activate", $data);
         $response->assertStatus(500);
     }
 
-    public function test_register_existing_user()
+    public function test_register_existing_user(): void
     {
-        $data = [
-            'name' => 'Mert Metin',
-            'phone' => '(613) 327-8306',
-            'email' => 'mertmetin@outlook.com',
-            'password' => '2631'
-        ];
-
-        $response = $this->post('api/users', $data);
+        $user = factory(\App\User::class)->create();
+        $response = $this->post('api/users', $user->make()->toArray());
         $response->assertStatus(500);
     }
 
-    /**
-     * @depends test_register
-     */
-    public function test_delete_user($data)
+    public function test_delete_user(): void
     {
-        $userId = $data['id'];
+        $user = factory(\App\User::class)->create();
+        $userId = $user->id;
         $response = $this->delete("api/users/$userId");
         $response->assertStatus(204);
     }
 
-    public function test_register_with_bad_name()
+    public function test_register_with_bad_name(): void
     {
-        $data = [
-            // Test this to check if the user inputs with a name and surname with a space
-            'name' => '',
-            'phone' => '(613) 327-8306',
-            'email' => 'mertmetin@outlook.com',
-            'password' => '2631'
-        ];
-
-        $response = $this->post("api/users/", $data);
+        $user = factory(\App\User::class)->make();
+        $user->name = '';
+        $response = $this->post("api/users/", $user->toArray());
         $response->assertStatus(500);
     }
 
-    public function test_register_with_bad_phone_number()
+    public function test_register_with_bad_phone_number(): void
     {
-        $data = [
-            // Test this to check if the user inputs with a name and surname with a space
-            'name' => 'mert',
-            'phone' => '6133278306',
-            'email' => 'mertmetin@outlook.com',
-            'password' => '2631'
-        ];
-
-        $response = $this->post("api/users/", $data);
+        $user = factory(\App\User::class)->make();
+        $user->phone = '';
+        $response = $this->post("api/users/", $user->toArray());
         $response->assertStatus(500);
     }
 
-    public function test_register_with_bad_email()
+    public function test_register_with_bad_email(): void
     {
-        $data = [
-            // Test this to check if the user inputs with a name and surname with a space
-            'name' => 'mert',
-            'phone' => '(613) 327-8306',
-            'email' => 'myemail',
-            'password' => '2631'
-        ];
-
-        $response = $this->post("api/users/", $data);
+        $user = factory(\App\User::class)->make();
+        $user->email = '';
+        $response = $this->post("api/users/", $user->toArray());
         $response->assertStatus(500);
     }
 
 
-    public function test_register_with_bad_password()
+    public function test_register_with_bad_password(): void
     {
-        $data = [
-            // Test this to check if the user inputs with a name and surname with a space
-            'name' => 'mert',
-            'phone' => '(613) 327-8306',
-            'email' => 'mertmetin@outlook.com',
-            // The password must be min 4 chars length
-            'password' => '26'
-        ];
-
-        $response = $this->post("api/users/", $data);
+        $user = factory(\App\User::class)->make();
+        $user->password = '';
+        $response = $this->post("api/users/", $user->toArray());
         $response->assertStatus(500);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Address;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\UserAddress;
 use App\AddressType;
@@ -28,7 +29,7 @@ class AddressController extends Controller
         return $userAddresses;
     }
 
-    protected function add(Request $request, $userId)
+    protected function add(Request $request, $userId): Response
     {   
         if (!$request->filled('address'))
             throw new \Exception('Invalid request.');
@@ -59,7 +60,7 @@ class AddressController extends Controller
             'lat' => $address['lat']
         ]);
 
-        $result;
+        return new Response([], 201);
     }
 
     protected function edit(Request $request)
@@ -76,13 +77,19 @@ class AddressController extends Controller
         return $dbUser->update($address);
     }
 
-    protected function delete(Request $request, $userId, $addressId)
+    protected function delete(Request $request, $userId)
     {
         // if (!$request->filled('id'))
         //     throw new \Exception('Invalid request.');
 
         // $userId = $request->input('userId');
         // $addressId = $request->input('id');
+
+        $addressId = $request->input('addressId');
+
+        if (!$addressId)
+            throw new \Exception('Invalid request.');
+
         $userAddress = UserAddress::where('user_id', $userId)
                 ->where('id', $addressId)
                 ->get()->last();
@@ -91,7 +98,8 @@ class AddressController extends Controller
             throw new \Exception('This address is already deleted');
 
         $userAddress = UserAddress::find($addressId);
+        $userAddress->delete();
 
-        return $userAddress->delete();
+        return new Response([], 204); 
     }
 }

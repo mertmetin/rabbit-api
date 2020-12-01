@@ -23,6 +23,8 @@ Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@res
 
 Route::get('/addresses/types', 'Address\AddressTypesController@get');
 
+
+
 /**
  * Promotions
  */
@@ -38,12 +40,14 @@ Route::group(['middleware' => ['auth:api']], function () {
      */
     Route::get('users/{user_id}/addresses', 'Address\AddressController@get');
     Route::post('users/{user_id}/addresses', 'Address\AddressController@add');
-    Route::delete('users/{user_id}/addresses/{address_id}', 'Address\AddressController@delete');
+    Route::delete('users/{user_id}/addresses', 'Address\AddressController@delete');
 
     /**
      * Stores
      */
-    Route::post('/stores/', 'Store\StoreController@getStore');
+    Route::post('stores', 'Store\StoreController@add');
+    Route::get('stores', 'Store\StoreController@get');
+    Route::get('stores/closest', 'Store\StoreController@getClosestStore');
     Route::get('stores/{store_id}/categories', 'Store\StoreProductsController@getStoreProductCategories');
     Route::get('stores/{store_id}/products', 'Store\StoreProductsController@getStoreProducts');
 

@@ -17,7 +17,7 @@ class CreateStoresTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->geometry('coordinates');
-            $table->timestamps();
+            // $table->timestamps();
         });
     }
 

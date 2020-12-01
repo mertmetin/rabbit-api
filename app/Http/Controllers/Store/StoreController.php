@@ -3,37 +3,65 @@
 namespace App\Http\Controllers\Store;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Store;
 
 class StoreController extends Controller
 {
-    protected function getStore(Request $request)
+    protected function add(Request $request): Response
     {
-        if (!$request->filled('address'))
+        $name = $request->input('name');
+        $coordinates = $request->input('coordinates');
+
+        if (!$name || !$coordinates)
+            throw new \Exception('Invalid request.');
+
+        try {
+            $user = Store::create([
+                'name' => $name,
+                'coordinates' => $coordinates
+            ]);
+        } catch (\Exception $e) {
+            print($e);
+        }
+
+        return new Response([], 201);
+    }
+
+    protected function get(Request $request): Response
+    {
+        $stores = Store::all();
+
+        return new Response($stores->toArray());
+    }
+
+    protected function getClosestStore(Request $request)
+    {
+        $addressLat = $request->input('lat');
+        $addressLng = $request->input('lng');
+
+        if (!$addressLat || !$addressLng)
             throw new \Exception('Invalid request.');
 
         $stores = Store::all();
-        $address = $request->input('address');
-        $addressLat = $address['lat'];
-        $addressLng = $address['lng'];
+        $closestStore = false;
+        $min = 11;
 
         foreach ($stores as $key => $store) {
             $storeLat = $store['coordinates']->getLat();
             $storeLng = $store['coordinates']->getLng();
+            
             $dist = $this->getDistance($storeLat, $storeLng, $addressLat, $addressLng);
 
-            if ($dist < 10) {
-
-                return [
-                    'id' => $store['id'],
-                    'latitude' => $storeLat, 
-                    'longitude' => $storeLng
-                ];
+            if ($dist < $min)
+            {
+                $closestStore = $store;
+                $min = $dist;
             }
         }
 
-        return false;
+        return $closestStore;
     }
 
     function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {  

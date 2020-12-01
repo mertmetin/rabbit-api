@@ -11,6 +11,8 @@ class Store extends Model
     use Spatial;
     use SpatialTrait;
 
+    public $timestamps = false;
+
     protected $spatial = ['coordinates'];    
 
     /**
@@ -19,7 +21,8 @@ class Store extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'coordinates'
     ];
 
     protected $spatialFields = [

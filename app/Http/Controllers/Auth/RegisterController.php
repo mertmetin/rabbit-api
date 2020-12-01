@@ -70,8 +70,11 @@ class RegisterController extends Controller
         $input = $request->all();
         $validator = $this->validator($input);
 
+
         if ($validator->fails())
-            throw new \InvalidArgumentException(json_encode($validator->failed()));
+            return new Response(json_encode($data), 500);
+
+            // throw new \InvalidArgumentException(json_encode($validator->failed()));
 
         $user = $this->createUser($input);
         $token = $this->sendActivationCode($user->phone);
