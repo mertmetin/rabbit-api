@@ -10,60 +10,30 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class LoginTest extends TestCase
 {
-    /**
-     * A basic feature test example.
-     *
-     * @return void
-     */
-    public function test_register()
-    {
-        $data = [
-            'name' => 'Mert Metin',
-            'phone' => '(613) 327-8306',
-            'email' => 'mertmetin@outlook.com',
-            'password' => '2631'
-        ];
-
-        $response = $this->post('api/users', $data);
-        $response->assertStatus(201);
-        $data = json_decode($response->getContent(), true);
-
-        return $data;
-    }
+    use DatabaseTransactions;
 
     public function test_login_without_activating_user()
     {
+        $user = factory(\App\User::class)->create();
         $data = [
-            'phone' => '(613) 327-8306',
-            'password' => '2631'
+            'phone' => $user->phone,
+            'password' => $user->password
         ];
         $response = $this->post('api/login', $data);
         $response->assertStatus(401);
     }
 
-    /**
-     * @depends test_register
-     */
-    public function test_activate_user($data)
-    {
-        $userId = $data['id'];
-        $response = $this->patch("api/users/$userId/activate", $data);
-        $response->assertStatus(200);
-    }
-
     public function test_login()
     {
+        $user = factory(\App\User::class)->create();
         $data = [
-            'phone' => '(613) 327-8306',
-            'password' => '2631'
+            'phone' => $user->phone,
+            'password' => 2631
         ];
         $response = $this->post('api/login', $data);
         $data = json_decode($response->getContent(), true);
-        $token = $data['token'];
-        $this->assertNotNull($token);
         $response->assertStatus(200);
-
-        return $token;
+        $this->assertNotNull($data['token']);
     }
 
 
@@ -77,25 +47,19 @@ class LoginTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /**
-     * @depends test_login
-     */
-    public function test_logout($token)
+    public function test_logout()
     {
+        $user = factory(\App\User::class)->create();
         $data = [
-            'token' => $token
+            'phone' => $user->phone,
+            'password' => 2631
+        ];
+        $response = $this->post('api/login', $data);
+        $data = json_decode($response->getContent(), true);
+        $data = [
+            'token' => $data['token']
         ];
         $response = $this->post('api/logout', $data);
         $response->assertStatus(200);
-    }
-
-    /**
-     * @depends test_register
-     */
-    public function test_delete_user($data)
-    {
-        $userId = $data['id'];
-        $response = $this->delete("api/users/$userId");
-        $response->assertStatus(204);
     }
 }
