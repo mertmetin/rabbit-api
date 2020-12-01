@@ -51,11 +51,4 @@ final class UserAddressTest extends TestCase
             ("api/users/$userId/addresses", ['addressId' => $data[0]['id']]);
         $response->assertStatus(204);
     }
-
-
-    // public function tearDown(): void
-    // {
-    //     $this->user->remove();
-    // }
-
 }

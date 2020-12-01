@@ -8,11 +8,11 @@ use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
-class LoginTest extends TestCase
+final class LoginTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_login_without_activating_user()
+    public function test_login_without_activating_user(): void
     {
         $user = factory(\App\User::class)->create();
         $data = [
@@ -23,7 +23,7 @@ class LoginTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_login()
+    public function test_login(): void
     {
         $user = factory(\App\User::class)->create();
         $data = [
@@ -37,7 +37,7 @@ class LoginTest extends TestCase
     }
 
 
-    public function test_login_with_wrong_pass()
+    public function test_login_with_wrong_pass(): void
     {
         $data = [
             'phone' => '(613) 327-8306',
@@ -47,7 +47,7 @@ class LoginTest extends TestCase
         $response->assertStatus(401);
     }
 
-    public function test_logout()
+    public function test_logout(): void
     {
         $user = factory(\App\User::class)->create();
         $data = [
