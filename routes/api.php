@@ -23,8 +23,6 @@ Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@res
 
 Route::get('/addresses/types', 'Address\AddressTypesController@get');
 
-
-
 /**
  * Promotions
  */

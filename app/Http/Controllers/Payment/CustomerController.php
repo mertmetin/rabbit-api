@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\User;
 use App\StripeCustomer;
 
 class CustomerController extends Controller
 {
-    protected function register(Request $request)
+    protected function register(Request $request): Response
     {
         $userId = $request->input('userId');
 
@@ -43,6 +44,6 @@ class CustomerController extends Controller
             'customer_id' => $customerId
         ]);
 
-        return $customerId;
+        return new Response(['customer_id' => $customerId], 201);
     }
 }

@@ -40,11 +40,17 @@ class StoreProductsController extends Controller
                 $categories[$categoryId]['subcategories'] = [];
             }
 
-            $subCategoryId = $subCategory['id'];
-            $subCategories = $categories[$categoryId]['subcategories'];
+            if (isset($subCategory['id']))
+            {
+                $subCategoryId = $subCategory['id'];
+                $subCategories = $categories[$categoryId]['subcategories'];
+
+                if (empty($subCategories[$subCategoryId]))
+                    $categories[$categoryId]['subcategories'][$subCategoryId] = $subCategory->toArray();
+            }
+           
             
-            if (empty($subCategories[$subCategoryId]))
-                $categories[$categoryId]['subcategories'][$subCategoryId] = $subCategory->toArray();
+         
         }
 
         return $categories;

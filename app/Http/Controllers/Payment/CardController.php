@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\User;
 use App\StripeCard;
 use App\StripeCustomer;
@@ -11,7 +12,7 @@ use App\StripeCustomer;
 class CardController extends Controller
 {
 
-    protected function get(Request $request)
+    protected function get(Request $request): Response
     {
         $userId = $request->input('userId');
 
@@ -22,10 +23,10 @@ class CardController extends Controller
         $customerId = $stripeCustomer->customer_id;
         $stripeCards = StripeCard::where('customer_id', $customerId)->get()->all();
 
-        return $stripeCards;
+        return new Response($stripeCards);
     }
 
-    protected function update(Request $request)
+    protected function update(Request $request): Response
     {
         if (!$request->filled('paymentMethod'))
             throw new \Exception('Invalid request.');
@@ -46,8 +47,9 @@ class CardController extends Controller
 
         $dbPaymentMethod = StripeCard::where('customer_id', $customerId)
                 ->get()->last();
+        $dbPaymentMethod->update($paymentMethod);
 
-        return $dbPaymentMethod->update($paymentMethod);
+        return new Response(null, 204);
     }
 
     protected function validateCreditCard($cardInfo)
@@ -55,9 +57,8 @@ class CardController extends Controller
         if (empty($cardInfo['cardNumber']) || empty($cardInfo['cvc']) || empty($cardInfo['expiryDate']))
             throw new \Exception('Invalid card info');
     }
-    
 
-    protected function add(Request $request)
+    protected function add(Request $request): Response
     {
         $customerId = $request->input('customerId');
         $cardInfo = $request->input('card_info');
@@ -105,10 +106,10 @@ class CardController extends Controller
             'brand' => $card->brand,
         ]);
 
-        return $card->id;
+        return new Response(['card_id' => $card->id], 201);
     }
 
-    protected function delete(Request $request)
+    protected function delete(Request $request): Response
     {
         if (!$request->filled('paymentMethod'))
             throw new \Exception('Invalid request.');
@@ -128,6 +129,8 @@ class CardController extends Controller
         if (!$card)
             throw new \Exception('This card is already deleted');
 
-        return $card->delete();
+        $card->delete();
+
+        return new Response(null, 204);
     }
 }

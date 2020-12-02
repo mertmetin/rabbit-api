@@ -6,9 +6,15 @@ use App\StoreProduct;
 use Faker\Generator as Faker;
 
 $factory->define(StoreProduct::class, function (Faker $faker) {
-    return [
-        [
-            'quantity' => 50,
-        ]
+     return [
+        'store_id' => factory(\App\Store::class),
+        'product_id' => factory(\App\Product::class),
+        'quantity' => 50
+
+        // 'title' => 'asd',
+        // 'description' => 'asd',
+        // 'price' => 50,
+        // 'category' => factory(\App\ProductCategory::class),
+        // 'image' => ''
     ];
 });

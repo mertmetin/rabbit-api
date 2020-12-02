@@ -10,14 +10,23 @@ final class StoreProductsTest extends TestCase
 
     public function test_get_store_categories()
     {
-        factory(\App\Store::class)->create();
-        // dd($user);
-
-
-        // $storeProducts = factory(\App\StoreProduct::class, 3)
-        //    ->create()
-        //    ->each(function ($storeProduct) {
-        //         // $storeProduct->products()->save(factory(App\Product::class)->make());
-        //     });
+        $user = factory(\App\User::class)->create();
+        $product = factory(\App\StoreProduct::class)->create();
+        $storeId = $product->store_id;
+        $response = $this->actingAs($user, 'api')
+            ->get("api/stores/$storeId/categories");
+        $response->assertStatus(200);
     }
+
+    // public function test_get_store_products()
+    // {
+    //     $user = factory(\App\User::class)->create();
+    //     $product = factory(\App\StoreProduct::class)->create();
+    //     $storeId = $product->store_id;
+    //     $categoryId 
+    //     $response = $this->actingAs($user, 'api')
+    //         ->get("api/stores/$storeId/products?category");
+    //     dd($response);
+    //     $response->assertStatus(200);
+    // }
 }
