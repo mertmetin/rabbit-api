@@ -14,21 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::post('users', 'Auth\RegisterController@register');
-Route::patch('users/{user_id}/activate', 'Auth\RegisterController@activateUser');
-Route::delete('users/{user_id}', 'UsersController@delete');
-Route::post('users/{user_id}/token/resend', 'Auth\RegisterController@resendCode');
-Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
-Route::patch('users/{user_id}/password/reset', 'Auth\ResetPasswordController@resetPassword');
-
 Route::get('/addresses/types', 'Address\AddressTypesController@get');
-
+Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
 /**
  * Promotions
  */
 Route::get('promotions', 'Promotions\PromotionsController@get');
 
-Route::group(['middleware' => ['auth:api']], function () {
+Route::group(['middleware' => ['bindings']], function () {
+    Route::patch('users/{user}/activate', 'Auth\RegisterController@activateUser');
+    Route::delete('users/{user}', 'UsersController@delete');
+    Route::post('users/{user}/token/resend', 'Auth\RegisterController@resendCode');
+    Route::patch('users/{user}/password/reset', 'Auth\ResetPasswordController@resetPassword');
+});
+
+Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::get('user', 'UsersController@getUser');
     Route::patch('users/{user_id}/password/change', 'Auth\ChangePasswordController@changePassword');
     Route::put('users/{user_id}', 'UsersController@edit');
@@ -36,9 +38,9 @@ Route::group(['middleware' => ['auth:api']], function () {
     /**
      * Addresses
      */
-    Route::get('users/{user_id}/addresses', 'Address\AddressController@get');
-    Route::post('users/{user_id}/addresses', 'Address\AddressController@add');
-    Route::delete('users/{user_id}/addresses', 'Address\AddressController@delete');
+    Route::get('users/{user}/addresses', 'Address\AddressController@get');
+    Route::post('users/{user}/addresses', 'Address\AddressController@add');
+    Route::delete('users/{user}/addresses', 'Address\AddressController@delete');
 
     /**
      * Stores
@@ -46,8 +48,8 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::post('stores', 'Store\StoreController@add');
     Route::get('stores', 'Store\StoreController@get');
     Route::get('stores/closest', 'Store\StoreController@getClosestStore');
-    Route::get('stores/{store_id}/categories', 'Store\StoreProductsController@getStoreProductCategories');
-    Route::get('stores/{store_id}/products', 'Store\StoreProductsController@getStoreProducts');
+    Route::get('stores/{store}/categories', 'Store\StoreProductsController@getStoreProductCategories');
+    Route::get('stores/{store}/products', 'Store\StoreProductsController@getStoreProducts');
 
     /**
      * Payment
@@ -58,7 +60,6 @@ Route::group(['middleware' => ['auth:api']], function () {
     Route::get('payment/cards', 'Payment\CardController@get');
     Route::patch('payment/cards', 'Payment\CardController@update');
 });
-
 
 Route::post('login', 'Auth\LoginController@login');
 Route::post('logout', 'Auth\LoginController@logout');

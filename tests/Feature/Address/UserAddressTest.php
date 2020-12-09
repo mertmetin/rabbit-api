@@ -10,12 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 final class UserAddressTest extends TestCase
 {
-    use DatabaseTransactions;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
+    // use DatabaseTransactions;
 
     public function test_add_address()
     {
@@ -51,4 +46,14 @@ final class UserAddressTest extends TestCase
             ("api/users/$userId/addresses", ['addressId' => $data[0]['id']]);
         $response->assertStatus(204);
     }
+
+    // public function test_add_address_to_different_user()
+    // {
+    //     $user = factory(\App\User::class)->create();
+    //     // $user2 = factory(\App\User::class)->create();
+    //     $address = factory(\App\UserAddress::class)->make();
+    //     $userId = $user->id;
+    //     $res = $this->actingAs($user, 'api')->post
+    //         ("api/users/$userId/addresses", ['address' => $address->toArray()]);
+    // }
 }

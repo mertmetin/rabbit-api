@@ -70,11 +70,8 @@ class RegisterController extends Controller
         $input = $request->all();
         $validator = $this->validator($input);
 
-
         if ($validator->fails())
-            return new Response(json_encode($data), 500);
-
-            // throw new \InvalidArgumentException(json_encode($validator->failed()));
+            return new Response(json_encode($validator), 500);
 
         $user = $this->createUser($input);
         $token = $this->sendActivationCode($user->phone);
@@ -132,18 +129,18 @@ class RegisterController extends Controller
         return $token;
     }
 
-    protected function resendCode(Request $request, $userId): Response
+    protected function resendCode(Request $request, User $user): Response
     {
         $phone = $request->input('phone');
 
         if (!$phone)
             throw new InvalidArgumentException('Phone is missing.');
 
-        try {
-            $user = User::findOrFail($userId);
-        } catch (ModelNotFoundException $exception) {
-            throw new \Exception('User not found.');
-        }
+        // try {
+        //     $user = User::findOrFail($userId);
+        // } catch (ModelNotFoundException $exception) {
+        //     throw new \Exception('User not found.');
+        // }
 
         if ($user->active)
            throw new \Exception('User already activated.');
@@ -152,30 +149,20 @@ class RegisterController extends Controller
             throw new \Exception('Invalid request.');
 
         $code = $this->sendActivationCode($phone);
-        $this->createUserActivation($userId, $code);
+        $this->createUserActivation($user->id, $code);
 
         return new Response(true);
     }
 
-    protected function activateUser(Request $request, $userId): Response
+    protected function activateUser(Request $request, User $user): Response
     {
-        if (!$request->filled('token'))
-            throw new InvalidArgumentException('Registration token is missing.');
-
-        $input = $request->all();
         $token = $request->input('token');
-
-        try {
-            $user = User::findOrFail($userId);
-        } catch (ModelNotFoundException $exception) {
-            throw new \Exception('User not found.');
-        }
 
         if ($user->active)
            throw new \Exception('User already activated.');
 
         $userActivation = UserActivation::
-                        where('user_id', $userId)
+                        where('user_id', $user->id)
                         ->orderBy('id')
                         ->get()->last();
 
@@ -185,7 +172,7 @@ class RegisterController extends Controller
         if ($userActivation->token != $token)
             throw new \Exception('Wrong code entered.');    
 
-        User::where('id', $userId)
+        User::where('id', $user->id)
             ->update(['active' => 1, 'phone_verified_at' => now()]);
 
         return new Response(true);

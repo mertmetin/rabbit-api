@@ -31,7 +31,7 @@ class ResetPasswordController extends Controller
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
 
-    protected function resetPassword(Request $request, $userId): Response
+    protected function resetPassword(Request $request, User $user): Response
     {
         $token = $request->input('token');
         $password = $request->input('password');
@@ -39,13 +39,7 @@ class ResetPasswordController extends Controller
         if (!$token || !$password)
             throw new \InvalidArgumentException('Invalid request.');
 
-        try {
-            $user = User::findOrFail($userId);
-        } catch (ModelNotFoundException $exception) {
-            throw new \Exception('User not found.');
-        }
-
-        $passwordReset = PasswordReset::where('user_id', $userId)
+        $passwordReset = PasswordReset::where('user_id', $user->id)
             ->orderBy('id')
             ->get()->last();
 
@@ -55,7 +49,7 @@ class ResetPasswordController extends Controller
         if ($passwordReset->token != $token)
             throw new \Exception('Wrong code entered.');   
 
-          User::where('id', $userId)
+          User::where('id', $user->id)
             ->update(['password' => Hash::make($password)]);
 
         return new Response(true);

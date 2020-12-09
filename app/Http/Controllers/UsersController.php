@@ -15,9 +15,8 @@ class UsersController extends Controller
        return Auth::user();
     }
 
-    protected function delete(Request $request, $userId): Response
+    protected function delete(Request $request, User $user): Response
     {
-        $user = User::find($userId)->first();
         $user->delete();
 
         return new Response(true, 204);

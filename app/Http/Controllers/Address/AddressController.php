@@ -7,38 +7,28 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\UserAddress;
 use App\AddressType;
+use App\User;
+use Illuminate\Support\Facades\Auth;
 
 class AddressController extends Controller
 {
-    protected function get($userId)
+    protected function get(User $user)
     {
-        if (!$userId)
-            throw new \Exception('Invalid request.');
-
-        // $userId = $request->input('userId');
-        // $use = UserAddress::with('address_type')
-                //   ->find('19');
-        //   error_log(json_encode(UserAddress::with('AddressTypes')));
-        // try {
-        //     error_log(json_encode(UserAddress::find(19)->addressTypes->type));
-        // } catch (\Exception $e) {
-        //     error_log($e);
-        // }
-        $userAddresses = UserAddress::with('address_type')->where('user_id', $userId)->get();
+        $userAddresses = UserAddress::
+            with('address_type')->where('user_id', $user->id)->get();
 
         return $userAddresses;
     }
 
-    protected function add(Request $request, $userId): Response
+    protected function add(Request $request, User $user): Response
     {   
         if (!$request->filled('address'))
             throw new \Exception('Invalid request.');
 
-        // $userId = $request->input('userId');
         $address = $request->input('address');
         $placeId = $address['place_id'];
 
-        $userAddress = UserAddress::where('user_id', $userId)
+        $userAddress = UserAddress::where('user_id', $user->id)
                 ->where('place_id', $placeId)
                 ->get()->last();
 
@@ -48,7 +38,7 @@ class AddressController extends Controller
         $type = AddressType::where('type', $address['address_type'])->get()->last();
 
         $result = UserAddress::create([
-            'user_id' => $userId,
+            'user_id' => $user->id,
             'place_id' => $placeId,
             'description' => $address['description'],
             'main_text' => $address['main_text'],
@@ -77,20 +67,14 @@ class AddressController extends Controller
         return $dbUser->update($address);
     }
 
-    protected function delete(Request $request, $userId)
+    protected function delete(Request $request, User $user)
     {
-        // if (!$request->filled('id'))
-        //     throw new \Exception('Invalid request.');
-
-        // $userId = $request->input('userId');
-        // $addressId = $request->input('id');
-
         $addressId = $request->input('addressId');
 
         if (!$addressId)
             throw new \Exception('Invalid request.');
 
-        $userAddress = UserAddress::where('user_id', $userId)
+        $userAddress = UserAddress::where('user_id', $user->id)
                 ->where('id', $addressId)
                 ->get()->last();
 

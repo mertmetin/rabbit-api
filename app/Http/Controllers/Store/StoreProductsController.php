@@ -9,64 +9,49 @@ use App\Product;
 use App\ProductCategory;
 use Illuminate\Support\Facades\DB;
 use \Exception;
+use App\Store;
 
 class StoreProductsController extends Controller
 {
-    protected function getStoreProductCategories(Request $request, $storeId)
+    protected function getStoreProductCategories(Request $request, Store $store)
     {
-        // $storeId = $request->input('storeId');
-
-        // if (!$storeId)
-        //     throw new Exception('Invalid request.');
-        
-        $storeProducts = StoreProduct::where('store_id', $storeId)->get();
-
         $categories = [];
+        $storeProducts = StoreProduct::where('store_id', $store->id)->get();
 
         foreach ($storeProducts as $storeProduct)
         {
             $categoryId = $storeProduct->product['category'];
             $category = ProductCategory::find($categoryId);
 
-            while($category->parent) {
-                $subCategory = $category;
-                $category = ProductCategory::find($category->parent['id']);
-            }
-
-            $categoryId = $category['id'];
-
-            if (empty($categories[$categoryId])) {
-                $categories[$categoryId] =  $category->toArray();
-                $categories[$categoryId]['subcategories'] = [];
-            }
-
-            if (isset($subCategory['id']))
+            if ($category->parent)
             {
-                $subCategoryId = $subCategory['id'];
-                $subCategories = $categories[$categoryId]['subcategories'];
+                $parent = $category->parent->toArray();
+                $categoryId = $parent['category_id'];
 
-                if (empty($subCategories[$subCategoryId]))
-                    $categories[$categoryId]['subcategories'][$subCategoryId] = $subCategory->toArray();
+                if (empty($categories[$categoryId]))
+                {
+                    $parent['categories'] = [];
+                    $categories[$categoryId] = $parent;
+                }   
+
+                $category = $category->toArray();
+                unset($category['parent']);
+                $categories[$categoryId]['categories'] []= $category;
             }
-           
-            
-         
+            else {
+                $categories[$categoryId] = $category->toArray();
+            }
         }
 
-        return $categories;
+        return array_values($categories);
     }
 
-    protected function getStoreProducts(Request $request, $storeId)
+    protected function getStoreProducts(Request $request, Store $store)
     {
         $category = $request->input('category');
-        // $storeId =  $request->input('storeId');
-
-        // if (!$category)
-        //     throw new Exception('Invalid request.');
-
 
         $storeProducts = StoreProduct::
-                where('store_id', $storeId)->with('product')->get();
+                where('store_id', $store->id)->with('product')->get();
 
         if ($storeProducts->isEmpty())
             return;
