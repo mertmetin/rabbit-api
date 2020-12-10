@@ -17,11 +17,15 @@ class AddressController extends Controller
         $userAddresses = UserAddress::
             with('address_type')->where('user_id', $user->id)->get();
 
+        $this->authorize('view', $userAddresses->last());
+
         return $userAddresses;
     }
 
     protected function add(Request $request, User $user): Response
     {   
+        $this->authorize('create', UserAddress::class);
+
         if (!$request->filled('address'))
             throw new \Exception('Invalid request.');
 
@@ -50,7 +54,7 @@ class AddressController extends Controller
             'lat' => $address['lat']
         ]);
 
-        return new Response([], 201);
+        return new Response($result->id, 201);
     }
 
     protected function edit(Request $request)
@@ -67,7 +71,7 @@ class AddressController extends Controller
         return $dbUser->update($address);
     }
 
-    protected function delete(Request $request, User $user)
+    protected function destroy(Request $request, User $user)
     {
         $addressId = $request->input('addressId');
 
@@ -80,6 +84,8 @@ class AddressController extends Controller
 
         if (!$userAddress)
             throw new \Exception('This address is already deleted');
+
+        $this->authorize('delete', $userAddress);
 
         $userAddress = UserAddress::find($addressId);
         $userAddress->delete();

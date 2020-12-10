@@ -105,4 +105,68 @@ final class CardsTest extends TestCase
             delete('api/payment/cards', ['paymentMethod' => $paymentInfo]);
         $response->assertStatus(204);  
     }
+    
+    public function test_get_other_users_cards()
+    {
+        $user = factory(\App\User::class)->create();
+        $response = $this->actingAs($user, 'api')->
+            post('api/payment/customers', ['userId' => $user->id]);
+        $data = json_decode($response->getContent(), true);
+        $customerId = $data['customer_id'];
+        $cardInfo = [
+            'cardNumber' => '4242424242424242',
+            'cvc' => '333',
+            'expiryDate' => '09/28'
+        ];
+        $response = $this->actingAs($user, 'api')->
+            post('api/payment/cards', ['customerId' => $customerId, 'card_info' => $cardInfo]);
+        $user2 = factory(\App\User::class)->create();
+        $userId = $user->id;
+        $response = $this->actingAs($user2, 'api')->get("api/payment/cards?userId=$userId");
+        $response->assertStatus(403);
+    }
+
+    public function test_edit_other_users_cards()
+    {
+        $user = factory(\App\User::class)->create();
+        $response = $this->actingAs($user, 'api')->
+            post('api/payment/customers', ['userId' => $user->id]);
+        $data = json_decode($response->getContent(), true);
+        $customerId = $data['customer_id'];
+        $cardInfo = [
+            'cardNumber' => '4242424242424242',
+            'cvc' => '333',
+            'expiryDate' => '09/28'
+        ];
+        $response = $this->actingAs($user, 'api')->
+            post('api/payment/cards', ['customerId' => $customerId, 'card_info' => $cardInfo]);
+        $data = json_decode($response->getContent());
+        $cardId = $data->card_id;
+        $user2 = factory(\App\User::class)->create();
+        $response = $this->actingAs($user2, 'api')->patch("api/payment/cards",
+            ['paymentMethod' => ['id' => $cardId, 'customer_id' => $customerId, 'exp_month' => '10', 'exp_year' => '24']]);
+        $response->assertStatus(403);
+    }
+
+    public function test_delete_other_users_cards()
+    {
+        $user = factory(\App\User::class)->create();
+        $response = $this->actingAs($user, 'api')->
+            post('api/payment/customers', ['userId' => $user->id]);
+        $data = json_decode($response->getContent(), true);
+        $customerId = $data['customer_id'];
+        $cardInfo = [
+            'cardNumber' => '4242424242424242',
+            'cvc' => '333',
+            'expiryDate' => '09/28'
+        ];
+        $response = $this->actingAs($user, 'api')->
+            post('api/payment/cards', ['customerId' => $customerId, 'card_info' => $cardInfo]);
+        $data = json_decode($response->getContent());
+        $cardId = $data->card_id;
+        $user2 = factory(\App\User::class)->create();
+        $response = $this->actingAs($user2, 'api')->delete("api/payment/cards",
+            ['paymentMethod' => ['id' => $cardId, 'customer_id' => $customerId]]);
+        $response->assertStatus(403);
+    }
 }

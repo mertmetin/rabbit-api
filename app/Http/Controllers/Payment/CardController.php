@@ -21,9 +21,13 @@ class CardController extends Controller
 
         $stripeCustomer = StripeCustomer::where('user_id', $userId)->get()->last();
         $customerId = $stripeCustomer->customer_id;
-        $stripeCards = StripeCard::where('customer_id', $customerId)->get()->all();
+        $stripeCards = StripeCard::where('customer_id', $customerId)->get();
+        $lastCard = $stripeCards->last();
+        $lastCard->user_id = $lastCard->customer->user_id;
 
-        return new Response($stripeCards);
+        $this->authorize('view', $lastCard);
+
+        return new Response($stripeCards->all());
     }
 
     protected function update(Request $request): Response
@@ -33,6 +37,11 @@ class CardController extends Controller
 
         $paymentMethod = $request->input('paymentMethod');
         $customerId = $paymentMethod['customer_id'];
+        $card = StripeCard::where('customer_id', $customerId)
+                ->get()->last();
+        $card->user_id = $card->customer->user_id;
+        $this->authorize('update', $card);
+        unset($card->user_id);
 
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -45,9 +54,7 @@ class CardController extends Controller
             ]
         );
 
-        $dbPaymentMethod = StripeCard::where('customer_id', $customerId)
-                ->get()->last();
-        $dbPaymentMethod->update($paymentMethod);
+        $card->update($paymentMethod);
 
         return new Response(null, 204);
     }
@@ -116,6 +123,12 @@ class CardController extends Controller
 
         $paymentMethod = $request->input('paymentMethod');
         $cardId = $paymentMethod['id'];
+        $card = StripeCard::where('id', $cardId)->get()->last();
+        $card->user_id = $card->customer->user_id;
+        $this->authorize('delete', $card);
+
+        if (!$card)
+            throw new \Exception('This card is already deleted');
 
         \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -123,11 +136,6 @@ class CardController extends Controller
             $paymentMethod['customer_id'],
             $cardId
         );
-
-        $card = StripeCard::where('id', $cardId)->get()->last();
-
-        if (!$card)
-            throw new \Exception('This card is already deleted');
 
         $card->delete();
 

@@ -32,7 +32,7 @@ class UserAddressPolicy
      */
     public function view(User $user, UserAddress $userAddress)
     {
-        // return $user->id === $userAddress->user_id;
+        return $user->id === $userAddress->user_id;
     }
 
     /**
@@ -43,10 +43,7 @@ class UserAddressPolicy
      */
     public function create(User $user)
     {
-        dd('sd');
         return true;
-        // return $user->id === Auth::id  
-        //     ? Response::allow()  : Response::deny('403 Forbidden');
     }
 
     /**
@@ -70,7 +67,7 @@ class UserAddressPolicy
      */
     public function delete(User $user, UserAddress $userAddress)
     {
-        //
+        return $user->id === $userAddress->user_id;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\StripeCustomer;
 use Illuminate\Database\Eloquent\Model;
 
 class StripeCard extends Model
@@ -16,4 +17,9 @@ class StripeCard extends Model
     protected $fillable = [
         'id', 'customer_id', 'fingerprint', 'last4', 'exp_month', 'exp_year', 'brand'
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(StripeCustomer::class, 'customer_id', 'customer_id');
+    }
 }
