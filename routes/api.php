@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::post('users', 'Auth\RegisterController@register');
 Route::get('/addresses/types', 'Address\AddressTypesController@get');
 Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
+
 /**
  * Promotions
  */
@@ -48,8 +49,18 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::post('stores', 'Store\StoreController@add');
     Route::get('stores', 'Store\StoreController@get');
     Route::get('stores/closest', 'Store\StoreController@getClosestStore');
-    Route::get('stores/{store}/categories', 'Store\StoreProductsController@getStoreProductCategories');
-    Route::get('stores/{store}/products', 'Store\StoreProductsController@getStoreProducts');
+    // Route::get('stores/{store}/categories', 'Store\StoreProductsController@getStoreProductCategories');
+    // Route::get('stores/{store}/products', 'Store\StoreProductsController@getStoreProducts');
+
+    /**
+     * Inventory
+     */
+    Route::get('inventory', 'Inventory\InventoryController@get');
+    Route::post('inventory', 'Inventory\InventoryController@store');
+    Route::put('inventory/{inventory}', 'Inventory\InventoryController@update');
+    Route::delete('inventory/{inventory}', 'Inventory\InventoryController@destroy');
+
+
 
     /**
      * Payment

@@ -6,9 +6,18 @@ use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use App\Product;
 
-class StoreProduct extends Model
+class Inventory extends Model
 {
     use Searchable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'store_id', 'product_id', 'quantity'
+    ];
 
     public function product()
     {
