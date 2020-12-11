@@ -60,7 +60,14 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::put('inventory/{inventory}', 'Inventory\InventoryController@update');
     Route::delete('inventory/{inventory}', 'Inventory\InventoryController@destroy');
 
-
+    /**
+     * Orders
+     */
+    Route::get('orders', 'Orders\OrdersController@get');
+    Route::get('orders/{order}', 'Orders\OrdersController@getOrder');
+    Route::post('orders', 'Orders\OrdersController@store');
+    Route::put('orders/{order}', 'Orders\OrdersController@update');
+    Route::delete('orders/{order}', 'Orders\OrdersController@destroy');
 
     /**
      * Payment
