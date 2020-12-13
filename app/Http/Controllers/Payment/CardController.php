@@ -136,9 +136,7 @@ class CardController extends Controller
             $paymentMethod['customer_id'],
             $cardId
         );
-
-        $card->delete();
-
+        
         return new Response(null, 204);
     }
 }

@@ -14,10 +14,13 @@ class CreateStripeCardsTable extends Migration
     public function up()
     {
         Schema::create('stripe_cards', function (Blueprint $table) {
-            $table->string('id')->unique();
+            $table->string('id');
             $table->string('customer_id')->unassigned();
             $table->foreign('customer_id')->references('customer_id')
                 ->on('stripe_customers')->onDelete('cascade');
+            $table->integer('payment_methods_id')->unsigned();
+            $table->foreign('payment_methods_id')->references('id')
+                ->on('payment_methods');
             $table->string('fingerprint');
             $table->string('last4');
             $table->string('exp_month');

@@ -60,7 +60,7 @@ final class CardsTest extends TestCase
         $customerId = $data['customer_id'];
         $cardInfo = [
             'cardNumber' => '4242424242424242',
-            'cvc' => '333',
+                'cvc' => '333',
             'expiryDate' => '09/28'
         ];
         $response = $this->actingAs($user, 'api')->

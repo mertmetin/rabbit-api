@@ -66,17 +66,24 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::get('orders', 'Orders\OrdersController@get');
     Route::get('orders/{order}', 'Orders\OrdersController@getOrder');
     Route::post('orders', 'Orders\OrdersController@store');
-    Route::put('orders/{order}', 'Orders\OrdersController@update');
+    Route::put('orders/{order}/close', 'Orders\OrdersController@closeOrder');
+    Route::put('orders/{order}/cancel', 'Orders\OrdersController@cancelOrder');
     Route::delete('orders/{order}', 'Orders\OrdersController@destroy');
 
     /**
-     * Payment
+     * Payment Methods
      */
-    Route::post('payment/customers', 'Payment\CustomerController@register');
-    Route::post('payment/cards', 'Payment\CardController@add');
-    Route::delete('payment/cards', 'Payment\CardController@delete');
-    Route::get('payment/cards', 'Payment\CardController@get');
-    Route::patch('payment/cards', 'Payment\CardController@update');
+    Route::post('payment/methods', 'Payment\PaymentMethodsController@store');
+    Route::get('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@get');
+    Route::put('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@update');
+    Route::delete('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@delete');
+
+
+    // Route::post('payment/customers', 'Payment\CustomerController@register');
+    // Route::post('payment/cards', 'Payment\CardController@add');
+    // Route::delete('payment/cards', 'Payment\CardController@delete');
+    // Route::get('payment/cards', 'Payment\CardController@get');
+    // Route::patch('payment/cards', 'Payment\CardController@update');
 });
 
 Route::post('login', 'Auth\LoginController@login');

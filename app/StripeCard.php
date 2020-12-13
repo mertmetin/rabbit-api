@@ -15,7 +15,7 @@ class StripeCard extends Model
      * @var array
      */
     protected $fillable = [
-        'id', 'customer_id', 'fingerprint', 'last4', 'exp_month', 'exp_year', 'brand'
+        'id', 'customer_id', 'payment_methods_id', 'fingerprint', 'last4', 'exp_month', 'exp_year', 'brand'
     ];
 
     public function customer()

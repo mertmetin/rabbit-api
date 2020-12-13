@@ -11,6 +11,13 @@ class Inventory extends Model
     use Searchable;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'inventory';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
