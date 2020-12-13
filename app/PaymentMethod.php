@@ -14,5 +14,4 @@ class PaymentMethod extends Model
     protected $fillable = [
         'user_id', 'type_id'
     ];
-
 }

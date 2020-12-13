@@ -18,8 +18,8 @@ class CreateStripeCardsTable extends Migration
             $table->string('customer_id')->unassigned();
             $table->foreign('customer_id')->references('customer_id')
                 ->on('stripe_customers')->onDelete('cascade');
-            $table->integer('payment_methods_id')->unsigned();
-            $table->foreign('payment_methods_id')->references('id')
+            $table->integer('payment_method_id')->unsigned();
+            $table->foreign('payment_method_id')->references('id')
                 ->on('payment_methods');
             $table->string('fingerprint');
             $table->string('last4');

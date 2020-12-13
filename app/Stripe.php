@@ -41,7 +41,7 @@ class Stripe
 
         StripeCard::create([
             'id' => $card->id,
-            'payment_methods_id' => $id,
+            'payment_method_id' => $id,
             'customer_id' => $customerId,
             'fingerprint' => $card->fingerprint,
             'last4' => $card->last4,
@@ -55,12 +55,12 @@ class Stripe
 
     public function get($id)
     {   
-        return StripeCard::where('payment_methods_id', $id)->get()->last();
+        return StripeCard::where('payment_method_id', $id)->get()->last();
     }
 
     public function update($data)
     {   
-        $card = StripeCard::where('payment_methods_id', $data['id'])->get()->last();
+        $card = StripeCard::where('payment_method_id', $data['id'])->get()->last();
                 
         try {
             $result = \Stripe\Customer::updateSource(
@@ -84,7 +84,7 @@ class Stripe
 
     public function delete($data)
     {   
-        $card = StripeCard::where('payment_methods_id', $data['id'])->get()->last();
+        $card = StripeCard::where('payment_method_id', $data['id'])->get()->last();
         $card->user_id = $card->customer->user_id;
         
         try {

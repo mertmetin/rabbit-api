@@ -11,7 +11,6 @@ final class PaymentMethodsTest extends TestCase
     function test_add_credit_card()
     {
         $user = factory(\App\User::class)->create();
-        // $paymentMethodTypes = factory(\App\PaymentMethodTypes::class)->create();
         $paymentMethod =  factory(\App\PaymentMethod::class)->make(
             [
                 'user_id' => $user->id,

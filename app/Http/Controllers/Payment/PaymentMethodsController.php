@@ -24,6 +24,8 @@ class PaymentMethodsController extends Controller
 
     protected function get(Request $request, PaymentMethod $paymentMethod): Response
     {
+        $this->authorize('update', $paymentMethod);
+
         $res = $this->paymentMethods->getPaymentMethod($paymentMethod->toArray());
 
         return new Response($res, 200);
@@ -44,6 +46,8 @@ class PaymentMethodsController extends Controller
 
     protected function update(Request $request, PaymentMethod $paymentMethod): Response
     {
+        $this->authorize('update', $paymentMethod);
+
         $data = $request->validate([
             'exp_month' => 'integer',
             'exp_year' => 'integer'
@@ -61,6 +65,8 @@ class PaymentMethodsController extends Controller
 
     protected function delete(Request $request, PaymentMethod $paymentMethod): Response
     {
+        $this->authorize('update', $paymentMethod);
+
         $res = $this->paymentMethods->deletePaymentMethod($paymentMethod->toArray());
 
         return new Response($res, 204);

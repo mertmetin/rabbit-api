@@ -77,13 +77,6 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::get('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@get');
     Route::put('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@update');
     Route::delete('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@delete');
-
-
-    // Route::post('payment/customers', 'Payment\CustomerController@register');
-    // Route::post('payment/cards', 'Payment\CardController@add');
-    // Route::delete('payment/cards', 'Payment\CardController@delete');
-    // Route::get('payment/cards', 'Payment\CardController@get');
-    // Route::patch('payment/cards', 'Payment\CardController@update');
 });
 
 Route::post('login', 'Auth\LoginController@login');
