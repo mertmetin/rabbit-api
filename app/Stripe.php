@@ -9,7 +9,7 @@ class Stripe
 {
     function __construct()
     {
-        \Stripe\Stripe::setApiKey('***REMOVED***');
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
     }
 
     public function store($id, $data)
