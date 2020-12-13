@@ -11,19 +11,8 @@ final class PaymentMethodsTest extends TestCase
     function test_add_credit_card()
     {
         $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)->make(
-            [
-                'user_id' => $user->id,
-                'type' => 'card'
-            ]
-        );
-        $paymentMethod->card  =  [
-            'number' => '4242424242424242',
-            'exp_month' => 05,
-            'exp_year' => 2021,
-            'cvc' => '363'
-        ];
-
+        $paymentMethod =  factory(\App\PaymentMethod::class)
+            ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
         $response->assertStatus(201);        
@@ -32,19 +21,8 @@ final class PaymentMethodsTest extends TestCase
     function test_get_credit_card()
     {
         $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)->make(
-            [
-                'user_id' => $user->id,
-                'type' => 'card'
-            ]
-        );
-        $paymentMethod->card  =  [
-            'number' => '4242424242424242',
-            'exp_month' => 05,
-            'exp_year' => 2021,
-            'cvc' => '363'
-        ];
-
+        $paymentMethod =  factory(\App\PaymentMethod::class)
+            ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
         $paymentMethodId = $response->getContent();
@@ -56,19 +34,8 @@ final class PaymentMethodsTest extends TestCase
     function test_delete_credit_card()
     {
         $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)->make(
-            [
-                'user_id' => $user->id,
-                'type' => 'card'
-            ]
-        );
-        $paymentMethod->card  =  [
-            'number' => '4242424242424242',
-            'exp_month' => 05,
-            'exp_year' => 2021,
-            'cvc' => '363'
-        ];
-
+        $paymentMethod =  factory(\App\PaymentMethod::class)
+            ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
         $paymentMethodId = $response->getContent();
@@ -80,19 +47,8 @@ final class PaymentMethodsTest extends TestCase
     function test_update_credit_card()
     {
         $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)->make(
-            [
-                'user_id' => $user->id,
-                'type' => 'card'
-            ]
-        );
-        $paymentMethod->card  =  [
-            'number' => '4242424242424242',
-            'exp_month' => 05,
-            'exp_year' => 2021,
-            'cvc' => '363'
-        ];
-
+        $paymentMethod =  factory(\App\PaymentMethod::class)
+            ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
         $paymentMethodId = $response->getContent();
