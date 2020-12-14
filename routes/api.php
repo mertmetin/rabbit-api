@@ -20,6 +20,11 @@ Route::get('/addresses/types', 'Address\AddressTypesController@get');
 Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
 
 /**
+ * Search
+ */
+Route::get('search', 'Search\SearchController@get');
+
+/**
  * Promotions
  */
 Route::get('promotions', 'Promotions\PromotionsController@get');

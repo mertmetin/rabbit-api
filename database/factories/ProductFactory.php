@@ -9,8 +9,8 @@ use Faker\Generator as Faker;
 
 $factory->define(Product::class, function () {
     return [
-        'title' => 'asd',
-        'description' => 'asd',
+        'title' => 'Perrier',
+        'description' => 'Perrier',
         'price' => 50,
         'category' => factory(\App\ProductCategory::class),
         'image' => ''
