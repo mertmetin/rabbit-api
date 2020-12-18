@@ -46,35 +46,36 @@ final class OrdersTest extends TestCase
         $address = factory(\App\UserAddress::class)->create(['user_id' => $user->id]);
         $product = factory(\App\Product::class)->create(['taxable' => true]);      
         $product2 = factory(\App\Product::class)->create(['taxable' => false]);       
-        $store = factory(\App\Store::class)->create();        
-        $checkout = factory(\App\Checkout::class)->make();
-        $checkout->store_id = $store->id;
-        $checkout->payment_method_id = $response->getContent();
-        $checkout->line_items = [
-            [
-                'id' => $product->id,
-                'taxable' => $product->taxable,
-                'quantity' => 1
-            ],
-            [
-                'id' => $product2->id,
-                'taxable' => $product2->taxable,
-                'quantity' => 1
+        $store = factory(\App\Store::class)->create();   
+        $inventory = factory(\App\Inventory::class)
+            ->create(['store_id' => $store->id, 'product_id' => $product->id, 'quantity' => 1]);   
+        $inventory = factory(\App\Inventory::class)
+            ->create(['store_id' => $store->id, 'product_id' => $product2->id, 'quantity' => 1]);  
+        $data = [
+            'user_id' => $user->id,
+            'store_id' =>  $store->id,
+            'user_address_id' => $address->id,
+            'payment_method_id' => $response->getContent(),
+            'line_items' => [
+                [
+                    'id' => $product->id,
+                    'taxable' => $product->taxable,
+                    'quantity' => 1
+                ],
+                [
+                    'id' => $product2->id,
+                    'taxable' => $product2->taxable,
+                    'quantity' => 1
+                ]
             ]
-        ];
-        $checkout->user_address_id = $address->id;
-        $checkout->user_id = $user->id;
+        ];     
         $response = $this->actingAs($user, 'api')
-            ->post('api/checkouts/', $checkout->toArray());
+            ->post('api/checkouts/', $data);
         $response->assertStatus(201); 
-        $data = json_decode($response->getContent(), true)[0];
+        $result = json_decode($response->getContent(), true)[0];
+        $data['checkout_id'] = $result['id'];
         $response = $this->actingAs($user, 'api')
-            ->post('api/orders/', [
-                'checkout_id' => $data['id'], 
-                'user_id' => $user->id, 
-                'line_items' => $checkout->line_items
-            ]
-        );
+            ->post('api/orders/', $data);
         $response->assertStatus(201); 
     }
 

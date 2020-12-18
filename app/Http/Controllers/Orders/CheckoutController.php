@@ -57,9 +57,12 @@ class CheckoutController extends Controller
         {
             $where = ['store_id' => $data['store_id'], 'product_id' => $lineItem['id']];
             $inventory = Inventory::where($where)->first();
-            
+
+            if (empty($inventory))
+                throw new \Exception('No inventory found for the product');
+
             if ($inventory->quantity < $lineItem['quantity'])
-                throw new \Exception('Insufficient quantity for product.');
+                throw new \Exception('Insufficient quantity for the product');
 
             $product = $inventory->product;
             $total += $product->price * $lineItem['quantity'];

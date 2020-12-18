@@ -9,6 +9,7 @@ use App\User;
 use App\Product;
 use App\Store;
 use App\Checkout;
+use App\Inventory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Repositories\TransactionRepository;
@@ -73,17 +74,28 @@ class OrdersController extends Controller
 
         foreach ($lineItems as $key => $lineItem)
         {
-            try {
-                $product = Product::findOrFail($lineItem['id']);
-            } catch (ModelNotFoundException $exception) {
+            $where = ['store_id' => $checkout->store_id, 'product_id' => $lineItem['id']];
+            $inventory = Inventory::where($where)->first();
+            
+            if (empty($inventory)) {
                 $order->delete();
-                throw new \Exception('Product not found.');
+                throw new \Exception('No inventory found for the product');
             }
+
+            if ($inventory->quantity < $lineItem['quantity']) {
+                $order->delete();
+                throw new \Exception('Insufficient quantity for the product');
+            }
+
+            $inventory->quantity = $inventory->quantity - $lineItem['quantity'];
+            $inventory->save();
+            $product = $inventory->product;
 
             $lineItems[$key]['order_id'] = $order->id;
             $lineItems[$key]['product_id'] = $product->id;
             unset($lineItems[$key]['taxable']);
         }
+
         DB::table('order_items')->insert($lineItems);
         $paymentMethod = $this->paymentMethods->getById($checkout->payment_method_id);
         $paymentMethod = $this->paymentMethods->getPaymentMethod($paymentMethod);

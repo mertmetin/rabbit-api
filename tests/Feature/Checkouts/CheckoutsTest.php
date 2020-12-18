@@ -23,8 +23,7 @@ final class CheckoutsTest extends TestCase
             ->create(['store_id' => $store->id, 'product_id' => $product->id, 'quantity' => 1]);   
         $inventory = factory(\App\Inventory::class)
             ->create(['store_id' => $store->id, 'product_id' => $product2->id, 'quantity' => 1]);  
-    //  dd($inventory);
-            $data = [
+        $data = [
             'user_id' => $user->id,
             'store_id' =>  $store->id,
             'user_address_id' => $address->id,
