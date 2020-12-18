@@ -29,7 +29,8 @@ class UserAddress extends Model
         'address_type', 
         'place_id',
         'lng',
-        'lat'
+        'lat',
+        'postal_code'
     ];
 
     public function address_type()

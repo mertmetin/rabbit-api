@@ -46,7 +46,7 @@ class CheckoutController extends Controller
         $total = 0;
         $totalTax = 0.0;
         $lineItems = $data['line_items'];
-        $postalCode = 'K1S5J6';
+        $postalCode = $userAddress->postal_code;
         $calculator = new TaxCalculator();
 
         foreach ($lineItems as $key => $lineItem)

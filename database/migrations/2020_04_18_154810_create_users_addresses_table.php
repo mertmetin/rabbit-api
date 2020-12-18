@@ -27,6 +27,7 @@ class CreateUsersAddressesTable extends Migration
             $table->string('place_id');
             $table->decimal('lng', 9, 6)->default(0);	
             $table->decimal('lat', 8, 6)->default(0);	
+            $table->string('postal_code');
             $table->timestamps();
         });
     }
