@@ -117,4 +117,20 @@ class Stripe
 
         return $customer->customer_id;
     }
+
+    public function charge($data, $total)
+    {
+        $charge = \Stripe\Charge::create([
+            'amount' => $total,
+            'currency' => 'CAD',
+            'description' => 'Example charge',
+            'source' => $data->card->id,
+            'customer' => $data->card->customer_id,
+            'statement_descriptor' => 'Custom descriptor',
+        ]);
+
+        return true;
+    }
+
+
 }

@@ -52,4 +52,9 @@ class PaymentFactory
     {
         return $this->payment->delete($data);
     }
+
+    public function charge($data, $total)
+    {
+        $this->payment->charge($data, $total);
+    }
 }

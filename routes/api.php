@@ -76,6 +76,12 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::delete('orders/{order}', 'Orders\OrdersController@destroy');
 
     /**
+     * Checkouts
+     */
+    Route::post('checkouts', 'Orders\CheckoutController@store');
+
+
+    /**
      * Payment Methods
      */
     Route::post('payment/methods', 'Payment\PaymentMethodsController@store');

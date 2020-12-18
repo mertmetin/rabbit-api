@@ -3,7 +3,8 @@
 namespace App\Repositories;
 
 use App\User;
-use App\PaymentMethodTypes;use App\Factories\PaymentFactory;
+use App\PaymentMethodTypes;
+use App\Factories\PaymentFactory;
 use App\PaymentMethod;
 use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 /**

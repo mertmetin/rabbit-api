@@ -39,9 +39,9 @@ class PaymentMethodsController extends Controller
             'card' => 'required'
         ]); 
 
-        $res = $this->paymentMethods->store($data);
+        $result = $this->paymentMethods->store($data);
 
-        return new Response($res, 201);
+        return new Response($result, 201);
     }
 
     protected function update(Request $request, PaymentMethod $paymentMethod): Response

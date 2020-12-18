@@ -15,6 +15,7 @@ $factory->define(UserAddress::class, function (Faker $faker) {
         'address_type' => 'home', 
         'place_id' => 'ChIJNS1qayJrK4gR3p5kAlXotSE',
         'lng' => '-79.790572',
-        'lat' => '43.620396'
+        'lat' => '43.620396',
+        'address_type' => 1
     ];
 });

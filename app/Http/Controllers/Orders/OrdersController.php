@@ -2,17 +2,43 @@
 
 namespace App\Http\Controllers\Orders;
 
+use DB;
 use App\Order;
 use App\OrderItems;
 use App\User;
 use App\Product;
 use App\Store;
+use App\Checkout;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Repositories\TransactionRepository;
+use App\Repositories\PaymentMethodsRepository;
+// use App\PaymentMethod;
 use App\Http\Controllers\Controller;
 
 class OrdersController extends Controller
 {
+    /**
+     * The payment methods repository implementation.
+     *
+     * @var PaymentMethodsRepository
+     */
+    protected $paymentMethods;
+
+    /**
+     * The payment methods repository implementation.
+     *
+     * @var PaymentMethodsRepository
+     */
+    protected $transaction;
+
+    public function __construct(PaymentMethodsRepository $paymentMethods, 
+        TransactionRepository $transaction)
+    {
+        $this->transaction = $transaction;
+        $this->paymentMethods = $paymentMethods;
+    }
+
     protected function get(Request $request): Response
     {
         return new Response(Order::all());
@@ -26,51 +52,40 @@ class OrdersController extends Controller
     protected function store(Request $request): Response
     {
         $data = $request->validate([
-            'user_id' => 'required|integer',
-            'store_id' => 'required|integer',
-            'total' => 'required|numeric|between:0,99.99',
-            'total_tax' => 'required|numeric|between:0,99.99',
+            'checkout_id' => 'required|integer',
             'line_items' => 'required'
-        ]); 
+        ]);
 
         try {
-            User::findOrFail($data['user_id']);
+            $checkout = Checkout::findOrFail($data['checkout_id']);
         } catch (ModelNotFoundException $exception) {
-            throw new \Exception('User not found.');
+            throw new \Exception('Invalid order');
         }
-
-        try {
-            Store::findOrFail($data['store_id']);
-        } catch (ModelNotFoundException $exception) {
-            throw new \Exception('Store not found.');
-        }
-
 
         $order = Order::create([
-            'user_id' => $data['user_id'],
-            'store_id' => $data['store_id'],
-            'total' => $data['total'],
-            'total_tax' => $data['total_tax']
+            'user_id' => $checkout->user_id
         ]);
 
         $lineItems = $data['line_items'];
 
-        foreach ($lineItems as $lineItem)
+        foreach ($lineItems as $key => $lineItem)
         {
             try {
-                Product::findOrFail($lineItem['id']);
+                $product = Product::findOrFail($lineItem['id']);
             } catch (ModelNotFoundException $exception) {
                 $order->delete();
                 throw new \Exception('Product not found.');
             }
 
-            $item = OrderItems::create(
-                [
-                    'product_id' => $lineItem['id'], 
-                    'quantity' => $lineItem['quantity']
-                ]
-            );
+            $lineItems[$key]['order_id'] = $order->id;
+            $lineItems[$key]['product_id'] = $product->id;
+            unset($lineItems[$key]['taxable']);
         }
+        DB::table('order_items')->insert($lineItems);
+        $paymentMethod = $this->paymentMethods->getById($checkout->payment_method_id);
+        $paymentMethod = $this->paymentMethods->getPaymentMethod($paymentMethod);
+        $total = (int) ($checkout->total + $checkout->total_tax) * 10;
+        $this->transaction->store($paymentMethod, $total);
 
         return new Response(['order_id' => $order->id], 201);
     }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "01dd14613aa142ade7daba1d90da2b0a",
+    "content-hash": "88ce067f0aab14ad4b7c0df2ba9cfddd",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -3268,6 +3268,60 @@
                 "type"
             ],
             "time": "2020-03-21T18:07:53+00:00"
+        },
+        {
+            "name": "proximify/bibutils",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Proximify/bibutils.git",
+                "reference": "b5a99706cc5903e4bdf949c47772b34fad6cf940"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Proximify/bibutils/zipball/b5a99706cc5903e4bdf949c47772b34fad6cf940",
+                "reference": "b5a99706cc5903e4bdf949c47772b34fad6cf940",
+                "shasum": ""
+            },
+            "require": {
+                "php": "~7.3"
+            },
+            "require-dev": {
+                "proximify/cli-actions": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Proximify\\Bibutils\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Proximify Inc",
+                    "email": "support@proximify.ca",
+                    "homepage": "https://proximify.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP class to interface with the Bibutils libraries written in ANSI C.",
+            "homepage": "https://github.com/proximify/bibutils",
+            "keywords": [
+                "bibtex",
+                "bibutils",
+                "endnote",
+                "proximify",
+                "uniweb"
+            ],
+            "time": "2020-11-30T20:58:24+00:00"
         },
         {
             "name": "psr/container",

@@ -21,6 +21,7 @@ class CreateProductsTable extends Migration
             $table->integer('category')->unsigned();
             $table->foreign('category')->references('id')->on('product_categories');
             $table->string('image');
+            $table->boolean('taxable');
             $table->timestamps();
         });
     }

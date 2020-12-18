@@ -20,6 +20,7 @@
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "mbezhanov/faker-provider-collection": "^1.2",
+        "proximify/bibutils": "^1.1",
         "stripe/stripe-php": "^7.28",
         "tcg/voyager": "^1.4",
         "twilio/sdk": "^6.2",
