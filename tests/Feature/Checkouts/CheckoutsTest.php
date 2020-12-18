@@ -19,7 +19,12 @@ final class CheckoutsTest extends TestCase
         $product = factory(\App\Product::class)->create(['taxable' => true]);      
         $product2 = factory(\App\Product::class)->create(['taxable' => false]);       
         $store = factory(\App\Store::class)->create();    
-        $data = [
+        $inventory = factory(\App\Inventory::class)
+            ->create(['store_id' => $store->id, 'product_id' => $product->id, 'quantity' => 1]);   
+        $inventory = factory(\App\Inventory::class)
+            ->create(['store_id' => $store->id, 'product_id' => $product2->id, 'quantity' => 1]);  
+    //  dd($inventory);
+            $data = [
             'user_id' => $user->id,
             'store_id' =>  $store->id,
             'user_address_id' => $address->id,

@@ -55,18 +55,20 @@ class CheckoutController extends Controller
 
         foreach ($lineItems as $key => $lineItem)
         {
-            try {
-                $product = Product::findOrFail($lineItem['id']);
-            } catch (ModelNotFoundException $exception) {
-                $order->delete();
-                throw new \Exception('Product not found.');
-            }
+            $where = ['store_id' => $data['store_id'], 'product_id' => $lineItem['id']];
+            $inventory = Inventory::where($where)->first();
+            
+            if ($inventory->quantity < $lineItem['quantity'])
+                throw new \Exception('Insufficient quantity for product.');
 
+            $product = $inventory->product;
             $total += $product->price * $lineItem['quantity'];
 
             if ($product->taxable)
-                $totalTax += $calculator->calculateTax($postalCode, $product->price) 
-                    * $lineItem['quantity'];
+            {
+                $productSalesTax = $calculator->calculateTax($postalCode, $product->price);
+                $totalTax += $productSalesTax * $lineItem['quantity'];
+            }
         }
 
         $checkout = Checkout::create([

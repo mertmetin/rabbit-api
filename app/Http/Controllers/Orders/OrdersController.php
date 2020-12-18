@@ -101,7 +101,6 @@ class OrdersController extends Controller
         return new Response($order->toArray(), 200);
     }
 
-
     protected function cancelOrder(Request $request, Order $order): Response
     {
         Order::where('id', $order->id)->update(['status' => 'cancelled']);
