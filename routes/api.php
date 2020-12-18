@@ -80,7 +80,6 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
      */
     Route::post('checkouts', 'Orders\CheckoutController@store');
 
-
     /**
      * Payment Methods
      */

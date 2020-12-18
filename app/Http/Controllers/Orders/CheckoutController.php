@@ -6,6 +6,7 @@ use App\User;
 use App\Store;
 use App\Product;
 use App\Checkout;
+use App\Inventory;
 use App\UserAddress;
 use App\TaxCalculator;
 use Illuminate\Http\Request;
@@ -26,10 +27,13 @@ class CheckoutController extends Controller
         ]); 
 
         try {
-            User::findOrFail($data['user_id']);
+            $user = User::findOrFail($data['user_id']);
         } catch (ModelNotFoundException $exception) {
             throw new \Exception('User not found.');
         }
+
+        if ($request->user()->cannot('create', Checkout::class))
+            abort(403);
 
         try {
             Store::findOrFail($data['store_id']);

@@ -62,6 +62,9 @@ class OrdersController extends Controller
             throw new \Exception('Invalid order');
         }
 
+        if ($request->user()->cannot('create', Order::class))
+            abort(403);
+
         $order = Order::create([
             'user_id' => $checkout->user_id
         ]);
