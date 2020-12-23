@@ -112,7 +112,7 @@ class RegisterController extends Controller
         $token = mt_rand (1000 , 9999);
         $msg = 'Your rabbit code is ' . $token;
         $snsClient = new SnsClient([
-            'profile' => 'default',
+            // 'profile' => 'default',
             'region' => 'us-east-1',
             'version' => '2010-03-31'
         ]);
