@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Search;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Factories\SearchFactory;
+use App\Factory\SearchFactory;
 use App\Http\Controllers\Controller;
 
 class SearchController extends Controller

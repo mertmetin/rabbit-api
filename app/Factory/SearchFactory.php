@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Factories;
+namespace App\Factory;
 
 class SearchFactory 
 {

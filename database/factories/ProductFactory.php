@@ -13,6 +13,7 @@ $factory->define(Product::class, function () {
         'description' => 'Perrier',
         'price' => 50,
         'category' => factory(\App\ProductCategory::class),
-        'image' => ''
+        'image' => '',
+        'taxable' => false
     ];
 });

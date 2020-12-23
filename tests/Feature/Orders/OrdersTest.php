@@ -43,7 +43,7 @@ final class OrdersTest extends TestCase
             ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
-        $address = factory(\App\UserAddress::class)->create(['user_id' => $user->id]);
+        $address = factory(\App\UserAddress::class)->create(['user_id' => $user->id, 'address_type' => 1]);
         $product = factory(\App\Product::class)->create(['taxable' => true]);      
         $product2 = factory(\App\Product::class)->create(['taxable' => false]);       
         $store = factory(\App\Store::class)->create();   

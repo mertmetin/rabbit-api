@@ -4,8 +4,8 @@ namespace App\Repositories;
 
 use JasonGuru\LaravelMakeRepository\Repository\BaseRepository;
 use App\Transaction;
-use App\Factories\PaymentMethodsRepository;
-use App\Factories\PaymentFactory;
+use App\Factory\PaymentMethodsRepository;
+use App\Factory\PaymentFactory;
 
 /**
  * Class TransactionRepository.
