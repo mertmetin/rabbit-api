@@ -43,7 +43,7 @@ class UserAddressPolicy
      */
     public function create(User $user)
     {
-        return true;
+        return $user->id === Auth::user()->id;
     }
 
     /**

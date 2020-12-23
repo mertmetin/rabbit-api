@@ -24,6 +24,9 @@ class AddressController extends Controller
 
     protected function add(Request $request, User $user): Response
     {   
+        if ($request->user()->cannot('create', UserAddress::class))
+            abort(403);
+
         $this->authorize('create', UserAddress::class);
 
         if (!$request->filled('address'))
@@ -40,7 +43,6 @@ class AddressController extends Controller
             throw new \Exception('This address is already added.');
         
         $type = AddressType::where('type', $address['address_type'])->get()->last();
-
         $result = UserAddress::create([
             'user_id' => $user->id,
             'place_id' => $placeId,
@@ -51,7 +53,8 @@ class AddressController extends Controller
             'business_or_building_name' => $address['business_or_building_name'],
             'address_type' => $type->id,
             'lng' => $address['lng'],
-            'lat' => $address['lat']
+            'lat' => $address['lat'],
+            'postal_code' => $address['postal_code']
         ]);
 
         return new Response($result->id, 201);
