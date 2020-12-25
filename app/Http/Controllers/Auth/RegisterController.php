@@ -70,6 +70,8 @@ class RegisterController extends Controller
         $input = $request->all();
         $validator = $this->validator($input);
 
+        // dd($validator->fails());
+
         if ($validator->fails())
             return new Response(json_encode($validator), 500);
 

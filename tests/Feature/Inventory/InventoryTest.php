@@ -8,6 +8,22 @@ final class InventoryTest extends TestCase
 {
     use DatabaseTransactions;
 
+    public function test_get_categories()
+    {
+        $user = factory(\App\User::class)->create();
+        $category = factory(\App\ProductCategory::class)->create();
+        $subcategory = factory(\App\ProductCategory::class)->create([
+            'title' => 'Carbonated Water', 'category_id' => $category->id]);
+        $product = factory(\App\Product::class)->create(['title' => 'Perrier', 'category' => $subcategory->id]);
+        $inventory = factory(\App\Inventory::class)->create(['product_id' => $product->id]);
+        $storeId = $inventory->store_id;   
+        $response = $this->actingAs($user, 'api')
+            ->get("api/lists/products?store_id=$storeId");
+        $content = $response->getContent();
+        $this->assertNotNull($content);
+        $response->assertStatus(200); 
+    }
+
     public function test_get_inventories()
     {
         $user = factory(\App\User::class)->create();

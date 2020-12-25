@@ -64,6 +64,11 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::post('inventory', 'Inventory\InventoryController@store');
     Route::put('inventory/{inventory}', 'Inventory\InventoryController@update');
     Route::delete('inventory/{inventory}', 'Inventory\InventoryController@destroy');
+    
+    /**
+     * Lists
+     */
+    Route::get('lists/products', 'Lists\ListsController@getProducts');
 
     /**
      * Orders

@@ -2,13 +2,23 @@
 
 namespace App;
 
+use App\Product;
+use App\Events\InventoryUpdated;
 use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
-use App\Product;
 
 class Inventory extends Model
 {
     use Searchable;
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => InventoryUpdated::class
+    ];
 
     /**
      * The table associated with the model.
