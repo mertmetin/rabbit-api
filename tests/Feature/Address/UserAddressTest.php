@@ -1,10 +1,10 @@
 <?php
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+
+use App\User;
+use App\UserAddress;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,8 +14,8 @@ final class UserAddressTest extends TestCase
 
     public function test_add_address()
     {
-        $user = factory(\App\User::class)->create();
-        $address = factory(\App\UserAddress::class)->make();
+        $user = User::factory()->create();
+        $address = UserAddress::factory()->make();
         $userId = $user->id;
         $response = $this->actingAs($user, 'api')->post
             ("api/users/$userId/addresses", ['address' => $address->toArray()]);
@@ -24,8 +24,8 @@ final class UserAddressTest extends TestCase
 
     public function test_get_address()
     {
-        $user = factory(\App\User::class)->create();
-        $address = factory(\App\UserAddress::class)->make();
+        $user = User::factory()->create();
+        $address = UserAddress::factory()->make();
         $userId = $user->id;
         $this->actingAs($user, 'api')->post
             ("api/users/$userId/addresses", ['address' => $address->toArray()]);
@@ -35,8 +35,8 @@ final class UserAddressTest extends TestCase
 
     public function test_delete_address()
     {
-        $user = factory(\App\User::class)->create();
-        $address = factory(\App\UserAddress::class)->make();
+        $user = User::factory()->create();
+        $address = UserAddress::factory()->make();
         $userId = $user->id;
         $this->actingAs($user, 'api')->post
             ("api/users/$userId/addresses", ['address' => $address->toArray()]);
@@ -49,9 +49,9 @@ final class UserAddressTest extends TestCase
 
     public function test_get_address_of_different_user()
     {
-        $user = factory(\App\User::class)->create();
-        $user2 = factory(\App\User::class)->create();
-        $address = factory(\App\UserAddress::class)->make();
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        $address = UserAddress::factory()->make();
         $userId = $user->id;
         $response = $this->actingAs($user, 'api')->post
             ("api/users/$userId/addresses", ['address' => $address->toArray()]);
@@ -62,9 +62,9 @@ final class UserAddressTest extends TestCase
 
     public function test_delete_address_of_different_user()
     {
-        $user = factory(\App\User::class)->create();
-        $user2 = factory(\App\User::class)->create();
-        $address = factory(\App\UserAddress::class)->make();
+        $user = User::factory()->create();
+        $user2 = User::factory()->create();
+        $address = UserAddress::factory()->make();
         $userId = $user->id;
         $response = $this->actingAs($user, 'api')->post
             ("api/users/$userId/addresses", ['address' => $address->toArray()]);
