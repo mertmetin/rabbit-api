@@ -1,6 +1,8 @@
 <?php
 namespace Tests\Feature;
 
+use App\User;
+use App\PaymentMethod;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -10,8 +12,8 @@ final class PaymentMethodsTest extends TestCase
 
     function test_add_credit_card()
     {
-        $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)
+        $user = User::factory()->create();
+        $paymentMethod =  PaymentMethod::factory()
             ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
@@ -20,8 +22,8 @@ final class PaymentMethodsTest extends TestCase
 
     function test_get_credit_card()
     {
-        $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)
+        $user = User::factory()->create();
+        $paymentMethod =  PaymentMethod::factory()
             ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
@@ -33,8 +35,8 @@ final class PaymentMethodsTest extends TestCase
 
     function test_delete_credit_card()
     {
-        $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)
+        $user = User::factory()->create();
+        $paymentMethod =  PaymentMethod::factory()
             ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
@@ -46,8 +48,8 @@ final class PaymentMethodsTest extends TestCase
 
     function test_update_credit_card()
     {
-        $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)
+        $user = User::factory()->create();
+        $paymentMethod =  PaymentMethod::factory()
             ->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());

@@ -1,6 +1,12 @@
 <?php
 namespace Tests\Feature;
 
+use App\User;
+use App\Inventory;
+use App\UserAddress;
+use App\Product;
+use App\Store;
+use App\PaymentMethod;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
@@ -10,18 +16,17 @@ final class CheckoutsTest extends TestCase
 
     public function test_add_checkout()
     {
-        $user = factory(\App\User::class)->create();
-        $paymentMethod =  factory(\App\PaymentMethod::class)
-            ->make(['user_id' => $user->id]);
+        $user = User::factory()->create();
+        $paymentMethod =  PaymentMethod::factory()->make(['user_id' => $user->id]);
         $response = $this->actingAs($user, 'api')->
             post('api/payment/methods', $paymentMethod->toArray());
-        $address = factory(\App\UserAddress::class)->create(['user_id' => $user->id, 'address_type' => 1]);
-        $product = factory(\App\Product::class)->create(['taxable' => true]);      
-        $product2 = factory(\App\Product::class)->create(['taxable' => false]);       
-        $store = factory(\App\Store::class)->create();    
-        $inventory = factory(\App\Inventory::class)
+        $address = UserAddress::factory()->create(['user_id' => $user->id, 'address_type' => 1]);
+        $product = Product::factory()->create(['taxable' => true]);      
+        $product2 = Product::factory()->create(['taxable' => false]);       
+        $store = Store::factory()->create();    
+        $inventory = Inventory::factory()
             ->create(['store_id' => $store->id, 'product_id' => $product->id, 'quantity' => 1]);   
-        $inventory = factory(\App\Inventory::class)
+        $inventory = Inventory::factory()
             ->create(['store_id' => $store->id, 'product_id' => $product2->id, 'quantity' => 1]);  
         $data = [
             'user_id' => $user->id,

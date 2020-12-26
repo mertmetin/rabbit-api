@@ -29,7 +29,6 @@ Route::get('search', 'Search\SearchController@get');
  */
 Route::get('promotions', 'Promotions\PromotionsController@get');
 
-
 /**
  * Lists
  */

@@ -1,14 +1,30 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Promotion;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Promotion::class, function (Faker $faker) {
-    return [
-        'title' => 'best promotion ever',
-        'description' => 'best promotion ever',
-        'image' => ''
-    ];
-});
+class PromotionFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Promotion::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title' => 'best promotion ever',
+            'description' => 'best promotion ever',
+            'image' => ''
+        ];
+    }
+}
