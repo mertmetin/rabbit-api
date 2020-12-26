@@ -35,6 +35,7 @@ class UpdateInventoryTree
         $productId = $inventory->product_id;
     
         $items = Inventory::where('store_id', $storeId)->get();
+
         $subcategories = [];
 
         foreach ($items as $item)

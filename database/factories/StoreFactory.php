@@ -1,14 +1,30 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Store;
-use Faker\Generator as Faker;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Store::class, function (Faker $faker) {
-    return [
-        'name' => "Ottawa Center",
-        'coordinates' => new Point(45.3929298, -75.7241912)
-    ];
-});
+class StoreFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Store::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'name' => "Ottawa Center",
+            'coordinates' => new Point(45.3929298, -75.7241912)
+        ];
+    }
+}

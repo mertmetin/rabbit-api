@@ -3,13 +3,15 @@
 namespace App;
 
 use TCG\Voyager\Traits\Spatial;
-use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Illuminate\Database\Eloquent\Model;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Store extends Model
 {
     use Spatial;
     use SpatialTrait;
+    use HasFactory;
 
     public $timestamps = false;
 

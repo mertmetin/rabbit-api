@@ -1,19 +1,34 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
 use App\Product;
-use Faker\Generator as Faker;
-// use Bezhanov\Faker\Provider\Commerce as Faker;
+use App\ProductCategory;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
+class ProductFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Product::class;
 
-$factory->define(Product::class, function () {
-    return [
-        'title' => 'Perrier',
-        'description' => 'Perrier',
-        'price' => 50,
-        'category' => factory(\App\ProductCategory::class),
-        'image' => '',
-        'taxable' => false
-    ];
-});
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'title' => $this->faker->name,
+            'description' => $this->faker->text,
+            'price' => $this->faker->randomFloat(2, 0, 100),
+            'category' => ProductCategory::factory(),
+            'image' => '',
+            'taxable' => false
+        ];
+    }
+}

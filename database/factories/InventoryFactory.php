@@ -1,14 +1,32 @@
 <?php
 
-/** @var \Illuminate\Database\Eloquent\Factory $factory */
+namespace Database\Factories;
 
+use App\Store;
+use App\Product;
 use App\Inventory;
-use Faker\Generator as Faker;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-$factory->define(Inventory::class, function (Faker $faker) {
-     return [
-        'store_id' => factory(\App\Store::class),
-        'product_id' => factory(\App\Product::class),
-        'quantity' => 50
-    ];
-});
+class InventoryFactory extends Factory
+{
+    /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Inventory::class;
+
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        return [
+            'store_id' => Store::factory(),
+            'product_id' => Product::factory(),
+            'quantity' => 50
+        ];
+    }
+}

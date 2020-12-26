@@ -35,6 +35,7 @@ services:
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         volumes:
             - 'sailmysql:/var/lib/mysql'
+            - ./mysql/my.cnf:/etc/mysql/my.cnf
         networks:
             - sail
     mysql-test:

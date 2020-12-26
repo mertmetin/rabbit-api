@@ -29,11 +29,26 @@ Route::get('search', 'Search\SearchController@get');
  */
 Route::get('promotions', 'Promotions\PromotionsController@get');
 
+
+/**
+ * Lists
+ */
+Route::get('lists/products', 'Lists\ListsController@getProducts');
+
 Route::group(['middleware' => ['bindings']], function () {
     Route::patch('users/{user}/activate', 'Auth\RegisterController@activateUser');
     Route::delete('users/{user}', 'UsersController@delete');
     Route::post('users/{user}/token/resend', 'Auth\RegisterController@resendCode');
     Route::patch('users/{user}/password/reset', 'Auth\ResetPasswordController@resetPassword');
+
+    /**
+    * Inventory
+    */
+    Route::get('inventory', 'Inventory\InventoryController@get');
+    Route::post('inventory', 'Inventory\InventoryController@store');
+    Route::put('inventory/{inventory}', 'Inventory\InventoryController@update');
+    Route::delete('inventory/{inventory}', 'Inventory\InventoryController@destroy');
+
 });
 
 Route::group(['middleware' => ['auth:api', 'bindings']], function () {
@@ -56,19 +71,6 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::get('stores/closest', 'Store\StoreController@getClosestStore');
     // Route::get('stores/{store}/categories', 'Store\StoreProductsController@getStoreProductCategories');
     // Route::get('stores/{store}/products', 'Store\StoreProductsController@getStoreProducts');
-
-    /**
-     * Inventory
-     */
-    Route::get('inventory', 'Inventory\InventoryController@get');
-    Route::post('inventory', 'Inventory\InventoryController@store');
-    Route::put('inventory/{inventory}', 'Inventory\InventoryController@update');
-    Route::delete('inventory/{inventory}', 'Inventory\InventoryController@destroy');
-    
-    /**
-     * Lists
-     */
-    Route::get('lists/products', 'Lists\ListsController@getProducts');
 
     /**
      * Orders
