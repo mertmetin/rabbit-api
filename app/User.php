@@ -3,15 +3,16 @@
 namespace App;
 
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
 class User extends \TCG\Voyager\Models\User implements JWTSubject
 {
-    // use HasApiTokens, Notifiable;
+    use HasFactory;
 
     /**
      * The attributes that are mass assignable.

@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
+use App\User;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 final class LoginTest extends TestCase
@@ -14,7 +12,7 @@ final class LoginTest extends TestCase
 
     public function test_login_without_activating_user(): void
     {
-        $user = factory(\App\User::class)->create();
+        $user = User::factory()->create();
         $data = [
             'phone' => $user->phone,
             'password' => $user->password
@@ -25,7 +23,7 @@ final class LoginTest extends TestCase
 
     public function test_login(): void
     {
-        $user = factory(\App\User::class)->create();
+        $user = User::factory()->create();
         $data = [
             'phone' => $user->phone,
             'password' => 2631
@@ -49,7 +47,7 @@ final class LoginTest extends TestCase
 
     public function test_logout(): void
     {
-        $user = factory(\App\User::class)->create();
+        $user = User::factory()->create();
         $data = [
             'phone' => $user->phone,
             'password' => 2631
