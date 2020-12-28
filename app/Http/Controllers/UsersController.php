@@ -22,14 +22,20 @@ class UsersController extends Controller
         return new Response(true, 204);
     }
 
-    protected function edit(Request $request)
+    protected function edit(Request $request, User $user): Response
     {
-        if (!$request->filled('user'))
-            throw new \Exception('Invalid request.');
+        if ($request->user()->cannot('create', User::class))
+            abort(403);
 
-        $user = $request->input('user');
-        $dbUser = User::find($user['id'])->first();
+        $data = $request->validate([
+            'name' => 'string|max:255',
+            'phone' => 'string|min:11',
+            'email' => 'string|max:255'
+        ]); 
 
-        return $dbUser->update($request->input('user'));
+        $result = $user->update($data);
+        $user = User::find($user->id);
+
+        return new Response($user, 200);
     }
 }

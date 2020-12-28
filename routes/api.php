@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 Route::post('users', 'Auth\RegisterController@register');
 Route::get('/addresses/types', 'Address\AddressTypesController@get');
 Route::post('users/password/recovery', 'Auth\ForgotPasswordController@sendPasswordResetCode');
@@ -52,8 +51,8 @@ Route::group(['middleware' => ['bindings']], function () {
 
 Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     Route::get('user', 'UsersController@getUser');
-    Route::patch('users/{user_id}/password/change', 'Auth\ChangePasswordController@changePassword');
-    Route::put('users/{user_id}', 'UsersController@edit');
+    Route::patch('users/{user}/password/change', 'Auth\ChangePasswordController@changePassword');
+    Route::put('users/{user}', 'UsersController@edit');
 
     /**
      * Addresses

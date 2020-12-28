@@ -12,29 +12,20 @@ use InvalidArgumentException;
 
 class ChangePasswordController extends Controller
 {
-    protected function changePassword(Request $request, $userId): Response
+    protected function changePassword(Request $request, User $user): Response
     {
         $data = $request->validate([
             'password' => 'required|min:4',
             'oldPassword' => 'required|min:4',
         ]);
 
-        try {
-            $user = User::findOrFail($userId);
-        } catch (ModelNotFoundException $exception) {
-            throw new \Exception('User not found.');
-        }
-
-
-        $password = $data['password'];
-        $oldPassword = $data['oldPassword'];
-
-        if (!Hash::check($oldPassword, $user->password))
+        if (!Hash::check($data['oldPassword'], $user->password))
             throw new \Exception('Wrong password.');
 
-        $result = User::where('id', $userId)
-            ->update(['password' => Hash::make($password)]);
+        $password = $data['password'];
+        $user->password = Hash::make($password);
+        $result = $user->save();
 
-        return new Response($result);
+        return new Response($result, 200);
     }
 }
