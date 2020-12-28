@@ -24,13 +24,13 @@ class UsersController extends Controller
 
     protected function edit(Request $request, User $user): Response
     {
-        if ($request->user()->cannot('create', User::class))
+        if ($request->user()->cannot('update', $user))
             abort(403);
 
         $data = $request->validate([
             'name' => 'string|max:255',
             'phone' => 'string|min:11',
-            'email' => 'string|max:255'
+            'email' => 'string|email'
         ]); 
 
         $result = $user->update($data);

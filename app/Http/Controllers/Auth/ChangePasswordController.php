@@ -14,6 +14,9 @@ class ChangePasswordController extends Controller
 {
     protected function changePassword(Request $request, User $user): Response
     {
+        if ($request->user()->cannot('update', $user))
+            abort(403);
+
         $data = $request->validate([
             'password' => 'required|min:4',
             'oldPassword' => 'required|min:4',

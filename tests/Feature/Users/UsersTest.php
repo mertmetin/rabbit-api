@@ -28,12 +28,14 @@ final class UsersTest extends TestCase
         $userId = $user->id;
         $data = [
             'name' => 'Mert Metin',
-            'phone' => '(613) 327-8306'
+            'phone' => '(613) 327-8306',
+            'email' => 'mertmetin@outlook.com'
         ];
         $result = $this->actingAs($user, 'api')
             ->put("api/users/$userId", $data);
         $content = json_decode($result->getContent(), true);
         $this->assertEquals($data['name'], $content['name']);
+        $this->assertEquals($data['email'], $content['email']);
         $this->assertEquals($data['phone'], $content['phone']);
     }
 

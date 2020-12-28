@@ -20,7 +20,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->id === Auth::user()->id;
+        // return $user->id === Auth::user()->id;
     }
 
     /**
