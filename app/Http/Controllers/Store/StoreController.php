@@ -53,8 +53,9 @@ class StoreController extends Controller
 
         foreach ($stores as $key => $store) 
         {
-            $storeLat = $store['coordinates']->getLat();
-            $storeLng = $store['coordinates']->getLng();
+            $coords = $store['coordinates'];
+            $storeLat = $coords->getLat();
+            $storeLng = $coords->getLng();
             
             $dist = $this->getDistance($storeLat, $storeLng, $lat, $lng);
 
