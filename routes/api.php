@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
      * Addresses
      */
     Route::get('users/{user}/addresses', 'Address\AddressController@get');
-    Route::post('users/{user}/addresses', 'Address\AddressController@add');
+    Route::post('users/{user}/addresses', 'Address\AddressController@store');
     Route::delete('users/{user}/addresses', 'Address\AddressController@destroy');
 
     /**

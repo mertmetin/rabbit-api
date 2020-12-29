@@ -2,37 +2,36 @@
 
 namespace App\Http\Controllers\Address;
 
+use App\User;
+use App\AddressType;
+use App\UserAddress;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use App\UserAddress;
-use App\AddressType;
-use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class AddressController extends Controller
 {
-    protected function get(User $user)
+    protected function get(User $user): Response
     {
         $userAddresses = UserAddress::
             with('address_type')->where('user_id', $user->id)->get();
 
         $this->authorize('view', $userAddresses->last());
 
-        return $userAddresses;
+        return new Response($userAddresses);
     }
 
-    protected function add(Request $request, User $user): Response
+    protected function store(Request $request, User $user): Response
     {   
         if ($request->user()->cannot('create', UserAddress::class))
             abort(403);
 
-        $this->authorize('create', UserAddress::class);
+        $data = $request->validate([
+            'address' => 'required'
+        ]);
 
-        if (!$request->filled('address'))
-            throw new \Exception('Invalid request.');
-
-        $address = $request->input('address');
+        $address = $data['address'];
         $placeId = $address['place_id'];
 
         $userAddress = UserAddress::where('user_id', $user->id)
@@ -42,7 +41,9 @@ class AddressController extends Controller
         if ($userAddress)
             throw new \Exception('This address is already added.');
         
-        $type = AddressType::where('type', $address['address_type'])->get()->last();
+        $type = AddressType::where('type', 
+            $address['address_type'])->get()->last();
+
         $result = UserAddress::create([
             'user_id' => $user->id,
             'place_id' => $placeId,
@@ -68,7 +69,8 @@ class AddressController extends Controller
         $userId = $request->input('userId');
         $address = $request->input('address');
 
-        $dbUser = UserAddress::where('user_id', $userId)->where('place_id', $address['place_id'])->first();
+        $dbUser = UserAddress::where('user_id', $userId)
+            ->where('place_id', $address['place_id'])->first();
         $address['user_id'] = $userId;
 
         return $dbUser->update($address);
@@ -76,19 +78,20 @@ class AddressController extends Controller
 
     protected function destroy(Request $request, User $user)
     {
-        $addressId = $request->input('addressId');
+        $data = $request->validate([
+            'address_id' => 'required|integer'
+        ]);
 
-        if (!$addressId)
-            throw new \Exception('Invalid request.');
-
-        $userAddress = UserAddress::where('user_id', $user->id)
-                ->where('id', $addressId)
+        $addressId = $data['address_id'];
+        $userAddress = UserAddress::where(['id' => $addressId, 
+            'user_id' => $user->id])
                 ->get()->last();
 
         if (!$userAddress)
             throw new \Exception('This address is already deleted');
 
-        $this->authorize('delete', $userAddress);
+        if ($request->user()->cannot('delete', $userAddress))
+            abort(403);
 
         $userAddress = UserAddress::find($addressId);
         $userAddress->delete();

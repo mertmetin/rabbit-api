@@ -43,7 +43,7 @@ final class UserAddressTest extends TestCase
         $response = $this->actingAs($user, 'api')->get("api/users/$userId/addresses");
         $data = json_decode($response->getContent(), true);
         $response = $this->actingAs($user, 'api')->delete
-            ("api/users/$userId/addresses", ['addressId' => $data[0]['id']]);
+            ("api/users/$userId/addresses", ['address_id' => $data[0]['id']]);
         $response->assertStatus(204);
     }
 
@@ -70,7 +70,7 @@ final class UserAddressTest extends TestCase
             ("api/users/$userId/addresses", ['address' => $address->toArray()]);
         $addressId = $response->getContent();
         $response = $this->actingAs($user2, 'api')->delete
-            ("api/users/$userId/addresses", ['addressId' => $addressId]);
+            ("api/users/$userId/addresses", ['address_id' => $addressId]);
         $response->assertStatus(403);
     }
 }
