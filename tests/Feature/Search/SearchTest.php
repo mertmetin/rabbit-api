@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature;
 
+use App\Product;
 use App\Inventory;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -11,7 +12,9 @@ final class SearchTest extends TestCase
 
     public function test_search()
     {
-        $inventory =  Inventory::factory()->create();
+        $product = Product::factory()
+            ->create(['title' => 'Perrier']);
+        $inventory = Inventory::factory()->create(['product_id' => $product->id]);
         sleep(5);
         $q = 'Per';
         $index = 'inventory';
