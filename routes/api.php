@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
     /**
      * Stores
      */
-    Route::post('stores', 'Store\StoreController@add');
+    Route::post('stores', 'Store\StoreController@store');
     Route::get('stores', 'Store\StoreController@get');
     Route::get('stores/closest', 'Store\StoreController@getClosestStore');
     // Route::get('stores/{store}/categories', 'Store\StoreProductsController@getStoreProductCategories');

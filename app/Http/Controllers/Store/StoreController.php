@@ -2,31 +2,33 @@
 
 namespace App\Http\Controllers\Store;
 
+use App\Store;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
-use App\Store;
 
 class StoreController extends Controller
 {
-    protected function add(Request $request): Response
-    {
-        $name = $request->input('name');
-        $coordinates = $request->input('coordinates');
+    const EARTH_RADIUS = 6371;
+    const MAX_STORE_DISTANCE = 10;
 
-        if (!$name || !$coordinates)
-            throw new \Exception('Invalid request.');
+    protected function store(Request $request): Response
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'coordinates' => 'required'
+        ]); 
 
         try {
-            $user = Store::create([
-                'name' => $name,
-                'coordinates' => $coordinates
+            $store = Store::create([
+                'name' => $data['name'],
+                'coordinates' => $data['coordinates']
             ]);
         } catch (\Exception $e) {
             print($e);
         }
 
-        return new Response([], 201);
+        return new Response(['store_id' => $store->id], 201);
     }
 
     protected function get(Request $request): Response
@@ -36,44 +38,46 @@ class StoreController extends Controller
         return new Response($stores->toArray());
     }
 
-    protected function getClosestStore(Request $request)
+    protected function getClosestStore(Request $request): Response
     {
-        $addressLat = $request->input('lat');
-        $addressLng = $request->input('lng');
+        $data = $request->validate([
+            'lat' => 'required',
+            'lng' => 'required'
+        ]); 
 
-        if (!$addressLat || !$addressLng)
-            throw new \Exception('Invalid request.');
+        $lat = $data['lat'];
+        $lng = $data['lng'];
 
         $stores = Store::all();
         $closestStore = false;
-        $min = 11;
 
-        foreach ($stores as $key => $store) {
+        foreach ($stores as $key => $store) 
+        {
             $storeLat = $store['coordinates']->getLat();
             $storeLng = $store['coordinates']->getLng();
             
-            $dist = $this->getDistance($storeLat, $storeLng, $addressLat, $addressLng);
+            $dist = $this->getDistance($storeLat, $storeLng, $lat, $lng);
 
-            if ($dist < $min)
+            if ($dist < self::MAX_STORE_DISTANCE)
             {
                 $closestStore = $store;
                 $min = $dist;
             }
         }
 
-        return $closestStore;
+        return new Response($closestStore);
     }
 
-    function getDistance($latitude1, $longitude1, $latitude2, $longitude2) {  
-        $earth_radius = 6371;  
-      
+    function getDistance($latitude1, $longitude1, $latitude2, $longitude2) 
+    {        
         $dLat = deg2rad($latitude2 - $latitude1);  
         $dLon = deg2rad($longitude2 - $longitude1);  
         
-        $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);  
+        $a = sin($dLat/2) * sin($dLat/2) + cos(deg2rad($latitude1)) 
+            * cos(deg2rad($latitude2)) * sin($dLon/2) * sin($dLon/2);  
         $c = 2 * asin(sqrt($a));  
-        $d = $earth_radius * $c;  
+        $d = self::EARTH_RADIUS * $c;  
       
         return $d;  
-}  
+    }  
 }

@@ -15,7 +15,8 @@ final class StoreTest extends TestCase
     {
         $user = User::factory()->create();
         $store = Store::factory()->make();
-        $response = $this->actingAs($user, 'api')->post('api/stores', $store->toArray());
+        $response = $this->actingAs($user, 'api')
+            ->post('api/stores', $store->toArray());
         $response->assertStatus(201);
     }
 
@@ -30,59 +31,56 @@ final class StoreTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // public function test_get_store_ottawa_east()
-    // {
-    //     $user = User::factory()->create();
-    //     $store = Store::factory()->make();
-    //     $ottawaEast = [
-    //         'name' => 'Ottawa East',
-    //         'coordinates' => new Point(45.4409817, -75.6310358)
-    //     ];
-    //     $store = Store::factory()->make($ottawaEast);
-    //     $address = [
-    //         'lat' => '45.4142038',
-    //         'lng' => '-75.637007'
-    //     ];
-    //     $q = http_build_query($address);
-    //     $response = $this->actingAs($user, 'api')->get("api/stores/closest?$q");
-    //     $data = json_decode($response->getContent(), true);
-    //     $this->assertNotNull($data);
-    //     $this->assertEquals($data['name'], 'Ottawa East');
-    // }
+    public function test_get_store_closest_store()
+    {
+        $user = User::factory()->create();
+        $store1 = Store::factory()->create(
+            [
+                'name' => 'Ottawa1',
+                'coordinates' => new Point(45.4409817, -75.6310358)
+            ]
+        );
+        $store2 = Store::factory()->create(
+            [
+                'name' => 'Ottawa2',
+                'coordinates' => new Point(46.4409817, -75.6310358)
+            ]
+        );
+        $address = [
+            'lat' => '46.4142038',
+            'lng' => '-75.637007'
+        ];
 
-    // public function test_get_store_ottawa_center()
-    // {
-    //     $user = User::factory()->create();
-    //     $store = Store::factory()->make();
-    //     $ottawaEast = [
-    //         'name' => 'Ottawa East',
-    //         'coordinates' => new Point(45.4409817, -75.6310358)
-    //     ];
-    //     $store = Store::factory()->make($ottawaEast);
-    //     $address = [
-    //         'lat' => '45.4347113',
-    //         'lng' => '-75.7352354'
-    //     ];
-    //     $q = http_build_query($address);
-    //     $response = $this->actingAs($user, 'api')->get("api/stores/closest?$q");
-    //     $data = json_decode($response->getContent(), true);
-    //     dd($data);
-    //     $this->assertNotNull($data);
-    //     $this->assertEquals($data['name'], 'Ottawa Center');
-    // }
+        $q = http_build_query($address);
+        $response = $this->actingAs($user, 'api')->get("api/stores/closest?$q");
+        $data = json_decode($response->getContent(), true);
+        $this->assertNotNull($data);
+        $this->assertEquals($data['name'], 'Ottawa2');
+    }
 
-    // public function test_get_store_find_fail()
-    // {
-    //     $user = User::factory()->create();
-    //     $store = Store::factory()->make();
-    //     // Bayshore
-    //     $address = [
-    //         'lat' => '45.3431272',
-    //         'lng' => '-75.8458969'
-    //     ];
-    //     $q = http_build_query($address);
-    //     $response = $this->actingAs($user, 'api')->get("api/stores/closest?$q");
-    //     $data = json_decode($response->getContent(), true);
-    //     $this->assertNull($data);
-    // }
+    public function test_get_no_store()
+    {
+        $user = User::factory()->create();
+        $store1 = Store::factory()->create(
+            [
+                'name' => 'Ottawa1',
+                'coordinates' => new Point(45.4409817, -75.6310358)
+            ]
+        );
+        $store2 = Store::factory()->create(
+            [
+                'name' => 'Ottawa2',
+                'coordinates' => new Point(46.4409817, -75.6310358)
+            ]
+        );
+        $address = [
+            'lat' => '50.4142038',
+            'lng' => '-75.637007'
+        ];
+
+        $q = http_build_query($address);
+        $response = $this->actingAs($user, 'api')->get("api/stores/closest?$q");
+        $data = json_decode($response->getContent(), true);
+        $this->assertNull($data);
+    }
 }
