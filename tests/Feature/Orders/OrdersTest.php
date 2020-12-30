@@ -8,11 +8,11 @@ use App\Product;
 use App\Store;
 use App\Inventory;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 final class OrdersTest extends TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     // public function test_get_orders()
     // {
@@ -57,6 +57,7 @@ final class OrdersTest extends TestCase
             ->create(['store_id' => $store->id, 'product_id' => $product->id, 'quantity' => 1]);   
         $inventory = Inventory::factory()
             ->create(['store_id' => $store->id, 'product_id' => $product2->id, 'quantity' => 1]);  
+        // dd($response->getContent());
         $data = [
             'user_id' => $user->id,
             'store_id' =>  $store->id,
