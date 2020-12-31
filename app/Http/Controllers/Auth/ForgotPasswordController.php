@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use App\PasswordReset;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Aws\Sns\SnsClient;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 
 class ForgotPasswordController extends Controller
 {
@@ -20,12 +21,13 @@ class ForgotPasswordController extends Controller
     | your application to your users. Feel free to explore this trait.
     |
     */
-    protected function sendPasswordResetCode(Request $request)
+    protected function sendPasswordResetCode(Request $request): Response
     {
-        if (!$request->filled('phone'))
-            throw new \Exception('Invalid request.');
+        $data = $request->validate([
+            'phone' => ['required', 'string', 'size:14']
+        ]);
 
-        $phone = $request->input('phone');
+        $phone = $data['phone'];
 
         try {
             $user = User::where('phone', $phone)->firstOrFail();
@@ -33,13 +35,16 @@ class ForgotPasswordController extends Controller
             throw new Exception('User not found.');
         }
 
-        $token = $this->sendCode($phone);
-        $passwordReset = PasswordReset::create([
-            'user_id' => $user->id,
-            'token' => $token
-        ]);
 
-        return $user->id;
+        $token = $this->sendCode($phone);
+        $params = [
+            'token' => $token,
+            'user_id' => $user->id
+        ];
+        $passwordReset = PasswordReset::create($params);
+        $params['phone'] = $phone;
+
+        return new Response($params, 201);
     }
     
     protected function sendCode($phone)
@@ -47,7 +52,7 @@ class ForgotPasswordController extends Controller
         $token = mt_rand (1000 , 9999);
         $msg = 'Your rabbit code is ' . $token;
         $snsClient = new SnsClient([
-            'profile' => 'default',
+            // 'profile' => 'default',
             'region' => 'us-east-1',
             'version' => '2010-03-31'
         ]);
