@@ -77,19 +77,23 @@ class PaymentMethodsRepository extends BaseRepository
         return $data;
     }
 
-    public function deletePaymentMethod($data)
+    public function deletePaymentMethod($paymentMethod)
     {
         try {
-            $paymentMethodType = PaymentMethodTypes::where('id', $data['type_id'])->get()->last();
+            $paymentMethodType = PaymentMethodTypes::where('id', $paymentMethod->type_id)->get()->last();
             $type = $paymentMethodType['type'];
+
         } catch (ModelNotFoundException $exception) {
             throw new \Exception("Invalid payment method: $type");
         }
 
         $payment = PaymentFactory::init($type);
-        $res = $payment->delete($data);
+        $result = $payment->delete($paymentMethod->toArray());
 
-        return $res;
+        if ($result)
+            $paymentMethod->delete();
+
+        return $result;
     }
 
     public function update($data)

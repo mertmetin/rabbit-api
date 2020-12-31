@@ -78,7 +78,7 @@ class PaymentMethodsController extends Controller
     {
         $this->authorize('update', $paymentMethod);
 
-        $res = $this->paymentMethods->deletePaymentMethod($paymentMethod->toArray());
+        $res = $this->paymentMethods->deletePaymentMethod($paymentMethod);
 
         return new Response($res, 204);
     }
