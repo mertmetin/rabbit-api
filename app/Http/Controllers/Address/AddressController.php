@@ -17,7 +17,10 @@ class AddressController extends Controller
         $userAddresses = UserAddress::
             with('address_type')->where('user_id', $user->id)->get();
 
-        $this->authorize('view', $userAddresses->last());
+        $userAddress = $userAddresses->last();
+
+        if ($userAddress)
+            $this->authorize('view', $userAddress);
 
         return new Response($userAddresses);
     }
@@ -76,13 +79,14 @@ class AddressController extends Controller
         return $dbUser->update($address);
     }
 
-    protected function destroy(Request $request, User $user)
+    protected function destroy(Request $request, User $user, $addressId)
     {
-        $data = $request->validate([
-            'address_id' => 'required|integer'
-        ]);
+        // error_log(json_encode($addressId));
+        // $data = $request->validate([
+        //     'address_id' => 'required'
+        // ]);
 
-        $addressId = $data['address_id'];
+        // $addressId = $data['address_id'];
         $userAddress = UserAddress::where(['id' => $addressId, 
             'user_id' => $user->id])
                 ->get()->last();

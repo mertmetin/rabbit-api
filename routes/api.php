@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
      */
     Route::get('users/{user}/addresses', 'Address\AddressController@get');
     Route::post('users/{user}/addresses', 'Address\AddressController@store');
-    Route::delete('users/{user}/addresses', 'Address\AddressController@destroy');
+    Route::delete('users/{user}/addresses/{address_id}', 'Address\AddressController@destroy');
 
     /**
      * Stores
@@ -89,6 +89,7 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
      * Payment Methods
      */
     Route::post('payment/methods', 'Payment\PaymentMethodsController@store');
+    Route::get('payment/methods', 'Payment\PaymentMethodsController@getAll');
     Route::get('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@get');
     Route::put('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@update');
     Route::delete('payment/methods/{payment_method}', 'Payment\PaymentMethodsController@delete');

@@ -41,6 +41,27 @@ class PaymentMethodsRepository extends BaseRepository
         return $payment->store($data);
     }
 
+    
+    public function getPaymentMethods($data)
+    {
+        $payments = [];
+
+        $paymentMethods = PaymentMethod::where('user_id', $data['user_id'])->get()->toArray();
+
+        if (empty($paymentMethods))
+            return [];
+
+        foreach ($paymentMethods as $paymentMethod)
+        {
+            $type = $paymentMethod['type_id'];
+            $paymentMethodType = PaymentMethodTypes::where('id', $type)->get()->last();
+            $payment = PaymentFactory::init($paymentMethodType->type);
+            $payments []= $payment->get($paymentMethod['id']);
+        }
+
+        return $payments;
+    }
+
     public function getPaymentMethod($data)
     {
         try {

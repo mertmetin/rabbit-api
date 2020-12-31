@@ -26,9 +26,20 @@ class PaymentMethodsController extends Controller
     {
         $this->authorize('update', $paymentMethod);
 
-        $res = $this->paymentMethods->getPaymentMethod($paymentMethod->toArray());
+        $result = $this->paymentMethods->getPaymentMethod($paymentMethod->toArray());
 
-        return new Response($res, 200);
+        return new Response($result, 200);
+    }
+
+    protected function getAll(Request $request): Response
+    {
+        $data = $request->validate([
+            'user_id' => 'required'
+        ]); 
+
+        $result = $this->paymentMethods->getPaymentMethods($data);
+
+        return new Response($result, 200);
     }
 
     protected function store(Request $request): Response
@@ -49,8 +60,8 @@ class PaymentMethodsController extends Controller
         $this->authorize('update', $paymentMethod);
 
         $data = $request->validate([
-            'exp_month' => 'integer',
-            'exp_year' => 'integer'
+            'exp_month' => 'numeric',
+            'exp_year' => 'numeric'
         ]); 
 
         $paymentMethod->card = [

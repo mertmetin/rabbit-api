@@ -53,6 +53,11 @@ class Stripe
         return $card->id;
     }
 
+    public function getAll($id)
+    {   
+        return StripeCard::all();
+    }
+
     public function get($id)
     {   
         return StripeCard::where('payment_method_id', $id)->get()->last();

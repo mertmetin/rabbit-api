@@ -123,7 +123,7 @@ class RegisterController extends Controller
                 'PhoneNumber' => '+1' . $phone,
             ]);
         } catch (Exception $e) {
-            throw new Exception('Unable to send activation code.');
+            throw new \Exception('Unable to send activation code.');
         }
 
         return $token;
