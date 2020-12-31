@@ -15,8 +15,6 @@ use Illuminate\Http\Response;
 use Aws\Sns\SnsClient;
 use InvalidArgumentException;
 
-// use Aws\Exception\AwsException;
-
 class RegisterController extends Controller
 {
     /*
@@ -59,7 +57,7 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'min:11'],
+            'phone' => ['required', 'string', 'size:14'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:4'],
         ]);
@@ -75,6 +73,7 @@ class RegisterController extends Controller
 
         $user = $this->createUser($input);
         $token = $this->sendActivationCode($user->phone);
+        
         $this->createUserActivation($user->id, $token);
 
         $data = [
@@ -101,7 +100,7 @@ class RegisterController extends Controller
                 'password' => Hash::make($data['password']),
             ]);
         } catch (\Exception $e) {
-            print($e);
+            throw new \Exception('This account is already registered');
         }
 
         return $user;
@@ -110,6 +109,7 @@ class RegisterController extends Controller
     protected function sendActivationCode($phone)
     {
         $token = mt_rand (1000 , 9999);
+
         $msg = 'Your rabbit code is ' . $token;
         $snsClient = new SnsClient([
             // 'profile' => 'default',
@@ -136,12 +136,6 @@ class RegisterController extends Controller
         if (!$phone)
             throw new InvalidArgumentException('Phone is missing.');
 
-        // try {
-        //     $user = User::findOrFail($userId);
-        // } catch (ModelNotFoundException $exception) {
-        //     throw new \Exception('User not found.');
-        // }
-
         if ($user->active)
            throw new \Exception('User already activated.');
 
@@ -162,9 +156,9 @@ class RegisterController extends Controller
            throw new \Exception('User already activated.');
 
         $userActivation = UserActivation::
-                        where('user_id', $user->id)
-                        ->orderBy('id')
-                        ->get()->last();
+                where('user_id', $user->id)
+                ->orderBy('id')
+                ->get()->last();
 
         if (!$userActivation)
             throw new \Exception('Invalid request.');

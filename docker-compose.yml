@@ -34,6 +34,7 @@ services:
         volumes:
             - ./:/var/www
             - ./nginx/conf.d/:/etc/nginx/conf.d/
+        command: [nginx-debug, '-g', 'daemon off;']
         networks:
             - sail
     mysql:
