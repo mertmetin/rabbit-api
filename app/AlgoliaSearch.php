@@ -12,6 +12,7 @@ class AlgoliaSearch
 
     function queryIndex($storeId, $index, $q)
     {   
+        error_log($storeId);
         $index = $this->client->initIndex($index);
         $index->setSettings([
             'searchableAttributes' => [
@@ -19,9 +20,8 @@ class AlgoliaSearch
                 'description'
             ]
         ]);
-        // dd($storeId);
         $result = $index->search($q, [
-            'filters' => "store_id=$storeId"
+            // 'filters' => "store_id=$storeId"
         ]);
 
         return $result;

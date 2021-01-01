@@ -20,7 +20,6 @@ class SearchController extends Controller
         $search = SearchFactory::init();
         $result = $search->service->queryIndex($data['store_id'], $data['index'], $data['q']);
 
-
         return new Response($result, 200);
     }
 }

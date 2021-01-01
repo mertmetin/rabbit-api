@@ -8,6 +8,7 @@
 #Laravel Specific files
 /vendor
 .env
+/public/storage
 /public/.htaccess
 # /storage
 storage/*.key
