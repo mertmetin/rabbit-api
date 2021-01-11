@@ -17,17 +17,18 @@ class CreateUsersAddressesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->string('description');
-            $table->string('main_text');
-            $table->string('secondary_text');
-            $table->string('apt_suite_floor')->nullable();
-            $table->string('business_or_building_name')->nullable();
+            $table->string('label')->nullable();
+            $table->string('address_line_1');
+            $table->string('address_line_2')->nullable();
+            $table->string('zone_code');
+            $table->string('postal_code')->nullable();
+            $table->string('city');
+            $table->string('country_code');
+            $table->decimal('latitude', 8, 6)->default(0);
+            $table->decimal('longitude', 9, 6)->default(0);	
+            $table->string('notes')->nullable();
             $table->integer('address_type')->unsigned();
             $table->foreign('address_type')->references('id')->on('address_types');
-            $table->string('place_id');
-            $table->decimal('lng', 9, 6)->default(0);	
-            $table->decimal('lat', 8, 6)->default(0);	
-            $table->string('postal_code');
             $table->timestamps();
         });
     }

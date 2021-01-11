@@ -35,31 +35,21 @@ class AddressController extends Controller
         ]);
 
         $address = $data['address'];
-        $placeId = $address['place_id'];
+        // $placeId = $address['place_id'];
 
-        $userAddress = UserAddress::where('user_id', $user->id)
-                ->where('place_id', $placeId)
-                ->get()->last();
+        // $userAddress = UserAddress::where('user_id', $user->id)
+        //         ->where('place_id', $placeId)
+        //         ->get()->last();
 
-        if ($userAddress)
-            throw new \Exception('This address is already added.');
+        // if ($userAddress)
+        //     throw new \Exception('This address is already added.');
         
         $type = AddressType::where('type', 
             $address['address_type'])->get()->last();
 
-        $result = UserAddress::create([
-            'user_id' => $user->id,
-            'place_id' => $placeId,
-            'description' => $address['description'],
-            'main_text' => $address['main_text'],
-            'secondary_text' => $address['secondary_text'],
-            'apt_suite_floor' => $address['apt_suite_floor'],
-            'business_or_building_name' => $address['business_or_building_name'],
-            'address_type' => $type->id,
-            'lng' => $address['lng'],
-            'lat' => $address['lat'],
-            'postal_code' => $address['postal_code']
-        ]);
+        $address['user_id'] = $user->id;
+        $address['address_type'] = $type->id;
+        $result = UserAddress::create($address);
 
         return new Response($result->id, 201);
     }

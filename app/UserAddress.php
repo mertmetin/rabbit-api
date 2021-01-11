@@ -25,16 +25,17 @@ class UserAddress extends Model
      */
     protected $fillable = [
         'user_id', 
-        'description', 
-        'main_text', 
-        'secondary_text', 
-        'apt_suite_floor', 
-        'business_or_building_name', 
-        'address_type', 
-        'place_id',
-        'lng',
-        'lat',
-        'postal_code'
+        'label',
+        'address_type',
+        'address_line_1',
+        'address_line_2',
+        'zone_code',
+        'postal_code',
+        'city',
+        'country_code',
+        'latitude',
+        'longitude',
+        'notes'
     ];
 
     public function address_type()
