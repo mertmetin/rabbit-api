@@ -33,6 +33,13 @@ Route::get('promotions', 'Promotions\PromotionsController@get');
  */
 Route::get('lists/products', 'Lists\ListsController@getProducts');
 
+/**
+ * Cities
+ */
+Route::get('cities', 'CityController@get');
+
+Route::get('stores/closest', 'Store\StoreController@getClosestStore');
+
 Route::group(['middleware' => ['bindings']], function () {
     Route::patch('users/{user}/activate', 'Auth\RegisterController@activateUser');
     Route::delete('users/{user}', 'UsersController@delete');
@@ -66,7 +73,7 @@ Route::group(['middleware' => ['auth:api', 'bindings']], function () {
      */
     Route::post('stores', 'Store\StoreController@store');
     Route::get('stores', 'Store\StoreController@get');
-    Route::get('stores/closest', 'Store\StoreController@getClosestStore');
+
     // Route::get('stores/{store}/categories', 'Store\StoreProductsController@getStoreProductCategories');
     // Route::get('stores/{store}/products', 'Store\StoreProductsController@getStoreProducts');
 

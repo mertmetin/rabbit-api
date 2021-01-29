@@ -90,6 +90,6 @@ class AddressController extends Controller
         $userAddress = UserAddress::find($addressId);
         $userAddress->delete();
 
-        return new Response([], 204); 
+        return new Response(null, 204); 
     }
 }
