@@ -1,79 +1,42 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+# Rabbit API (2020–21)
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+**The first backend for Rabbit, a grocery delivery service in Ottawa.** A Laravel 8 REST API that the original [customer app](https://github.com/mertmetin/rabbit-app) ran on in 2020–21.
 
-## About Laravel
+> **Archived.** In 2026 this API was replaced by [rabbit-server](https://github.com/mertmetin/rabbit-server), a TypeScript/Next.js backend that ports this data model to Prisma. This repo is kept to show where the project started.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Part of [Rabbit](https://github.com/mertmetin/rabbit-server): [backend](https://github.com/mertmetin/rabbit-server) · [customer app](https://github.com/mertmetin/rabbit-app) · [driver app](https://github.com/mertmetin/rabbit-driver) · **2021 API**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## What it did
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Accounts:** registration with an SMS activation code (AWS SNS), JWT login (`tymon/jwt-auth`), password reset by SMS, profile and password changes.
+- **Stores:** the closest store to the customer, using MySQL spatial columns and queries (`laravel-mysql-spatial`), and the cities served.
+- **Catalogue:** products, categories, inventory per store, promotions and product lists, with **Algolia** search through Laravel Scout.
+- **Addresses** with address types.
+- **Orders and checkout:** baskets checked against store inventory, orders that can be closed or cancelled, and saved cards through **Stripe**.
+- **Admin:** a Voyager back office for managing stores, products and orders.
 
-## Learning Laravel
+## Engineering
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **Stack:** PHP 7.3, Laravel 8, MySQL 8 with spatial types, Redis.
+- **Services:** Stripe, AWS SNS (SMS), Algolia.
+- **Tests:** 41 PHPUnit feature tests across addresses, auth, checkouts, inventory, orders, payments, promotions, search, stores and users.
+- **Local environment:** Docker Compose with the API, Nginx, MySQL (app and test databases), Redis and MailHog.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## What the 2026 rewrite changed
 
-## Laravel Sponsors
+Looking back at this code from the rewrite:
+- **Inventory endpoints had no authentication.** In `routes/api.php`, creating, updating and deleting inventory sat outside the `auth:api` group. In [rabbit-server](https://github.com/mertmetin/rabbit-server) stock changes are admin-only.
+- **Card charging moved to authorise-then-capture**, so customers pay only for what the driver actually finds.
+- **Search moved in-house** (MySQL), dropping the Algolia dependency for a catalogue of this size.
+- **Secrets moved out of the code:** an early version of the app had AWS keys pasted in comments; the new stack reads every secret from AWS SSM, and CI deploys through OIDC without stored keys.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Run locally (historical)
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
-- [云软科技](http://www.yunruan.ltd/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+cp .env.example .env
+docker-compose up -d
+docker-compose exec api composer install
+docker-compose exec api php artisan key:generate
+docker-compose exec api php artisan migrate --seed
+docker-compose exec api php artisan test
+```
